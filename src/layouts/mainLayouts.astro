@@ -1,14 +1,15 @@
 ---
-import '../styles/global.css';
-import Header from '../components/shared/Header.astro';
-import Footer from '../components/shared/Footer.astro';
-import Background from '../components/shared/background.astro';
+import "../styles/global.css";
+import Header from "../components/shared/header.astro";
+import Footer from "../components/shared/footer.astro";
+import FloatingLines from "@/components/shared/FloatingLines";
 
 interface Props {
   title?: string;
   description?: string;
 }
 
+const { title = "Mi sitio", description = "Descripción" } = Astro.props;
 ---
 
 <!doctype html>
@@ -16,19 +17,63 @@ interface Props {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{Astro.props.title}</title>
+    <title>{title}</title>
     <link rel="icon" href="/favicon.png" type="image/png" />
-    <meta name="description" content={Astro.props.description} />
+    <meta name="description" content={description} />
   </head>
   <body>
-    <Background />
+    <div class="site-bg">
+      <div class="floating-lines-wrap">
+        <FloatingLines
+          client:load
+          linesGradient={["#e945f5", "#6f6f6f", "#6a6a6a"]}
+          animationSpeed={5}
+          interactive={true}
+          bendRadius={1}
+          bendStrength={0}
+          mouseDamping={0.01}
+          parallax={true}
+          parallaxStrength={1}
+          topWavePosition={{ x: 10.0, y: 0.5, rotate: -0.4 }}
+          middleWavePosition={{ x: 5.0, y: 0.0, rotate: 0.2 }}
+        />
+      </div>
+    </div>
+
     <Header />
 
-    <main>
+    <main class="site-main">
       <slot />
     </main>
 
-    <Footer  />
+    <Footer />
   </body>
-
 </html>
+
+<style>
+  .site-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .floating-lines-wrap {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .floating-lines-wrap > div,
+  .floating-lines-wrap canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    pointer-events: all;
+  }
+
+  .site-main{
+    position: relative;
+    z-index: 1;
+  }
+</style>
