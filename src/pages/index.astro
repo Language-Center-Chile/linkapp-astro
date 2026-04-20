@@ -1,63 +1,59 @@
 ---
-import MainLayout from '../layouts/mainLayouts.astro';
-
-
+import MainLayout from "../layouts/mainLayouts.astro";
 ---
 
 <MainLayout
   title="Inicio | LinkApps"
   description="Bienvenido a LinkApps, tu plataforma de gestión de enlaces personalizada. Organiza, comparte y accede a tus enlaces favoritos de manera fácil y rápida. ¡Empieza a crear tu colección de enlaces hoy mismo!"
 >
+  <section class="text-center pt-20 pb-16 px-6 flex flex-col items-center">
+    <h1
+      class="text-5xl md:text-7xl font-black mb-6 leading-[1.1] tracking-tight text-white"
+    >
+      Organiza tu mundo digital<br />
+      <span class="gradient-text">con estilo</span>
+    </h1>
 
-  <div class="mesh-gradient" >
-    <div class="mesh-sphere sphere-1" ></div>
-    <div class="mesh-sphere sphere-2" ></div>
-    <div class="mesh-sphere sphere-3" ></div>
-  </div>
+    <p class="text-lg text-muted max-w-2xl mb-10 leading-relaxed">
+      LinkApp centraliza tus recursos más importantes en un entorno oscuro
+      elegante. Diseñado para la eficiencia, la privacidad y el minimalismo.
+    </p>
+  </section>
 
-    <section class="text-center pt-20 pb-16 px-6 flex flex-col items-center">
-
-
-      <h1 class="text-5xl md:text-7xl font-black mb-6 leading-[1.1] tracking-tight text-white">
-        Organiza tu mundo digital<br>
-        <span class="gradient-text">con estilo</span>
-      </h1>
-
-      <p class="text-lg text-muted max-w-2xl mb-10 leading-relaxed">
-        LinkApp centraliza tus recursos más importantes en un entorno oscuro elegante. 
-        Diseñado para la eficiencia, la privacidad y el minimalismo.
+  <section class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8 mb-24">
+    <div
+      class="group p-8 bg-surface border border-border rounded-3xl hover:border-blue/50 transition-all duration-300 hover:-translate-y-2"
+    >
+      <div class="text-blue text-3xl mb-4">📂</div>
+      <h3 class="text-xl font-bold mb-3 text-white">
+        Organización Inteligente
+      </h3>
+      <p class="text-muted text-sm leading-relaxed">
+        Estructura tus enlaces mediante carpetas personalizadas accesibles en un
+        clic.
       </p>
+    </div>
 
-      <div class="flex gap-4" >
-        <a href="registro-correo.html" id="cta-registro" class="px-8 py-4 bg-blue text-black font-black rounded-xl hover:scale-105 transition-transform shadow-lg shadow-blue/20">
-          Crear mi cuenta
-        </a>
-        <a href="funcion.html" id="cta-panel" class="hidden px-8 py-4 bg-teal text-black font-black rounded-xl hover:scale-105 transition-transform shadow-lg shadow-teal/20">
-          Ir a mi panel
-        </a>
-      </div>
-    </section>
+    <div
+      class="group p-8 bg-surface border border-border rounded-3xl hover:border-blue/50 transition-all duration-300 hover:-translate-y-2"
+    >
+      <div class="text-blue text-3xl mb-4">🌍</div>
+      <h3 class="text-xl font-bold mb-3 text-white">Acceso Universal</h3>
+      <p class="text-muted text-sm leading-relaxed">
+        Sincroniza tus colecciones y comparte tus gustos musicales o películas
+        con tus amigos de forma rápida.
+      </p>
+    </div>
 
-    <section class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8 mb-24">
-      <div class="group p-8 bg-surface border border-border rounded-3xl hover:border-blue/50 transition-all duration-300 hover:-translate-y-2" >
-        <div class="text-blue text-3xl mb-4" >📂</div>
-        <h3 class="text-xl font-bold mb-3 text-white">Organización Inteligente</h3>
-        <p class="text-muted text-sm leading-relaxed">Estructura tus enlaces mediante carpetas personalizadas accesibles en un clic.</p>
-      </div>
-
-      <div class="group p-8 bg-surface border border-border rounded-3xl hover:border-blue/50 transition-all duration-300 hover:-translate-y-2" >
-        <div class="text-blue text-3xl mb-4" >🌍</div>
-        <h3 class="text-xl font-bold mb-3 text-white">Acceso Universal</h3>
-        <p class="text-muted text-sm leading-relaxed">Sincroniza tus colecciones y comparte tus gustos musicales o películas con tus amigos de forma rápida.</p>
-      </div>
-
-      <div class="group p-8 bg-surface border border-border rounded-3xl hover:border-blue/50 transition-all duration-300 hover:-translate-y-2" >
-        <div class="text-blue text-3xl mb-4" >🔒</div>
-        <h3 class="text-xl font-bold mb-3 text-white">Privacidad Primero</h3>
-        <p class="text-muted text-sm leading-relaxed">Sin rastreadores. Tus datos te pertenecen. Un espacio seguro para tu tranquilidad digital.</p>
-      </div>
-    </section>
-
-
-
+    <div
+      class="group p-8 bg-surface border border-border rounded-3xl hover:border-blue/50 transition-all duration-300 hover:-translate-y-2"
+    >
+      <div class="text-blue text-3xl mb-4">🔒</div>
+      <h3 class="text-xl font-bold mb-3 text-white">Privacidad Primero</h3>
+      <p class="text-muted text-sm leading-relaxed">
+        Sin rastreadores. Tus datos te pertenecen. Un espacio seguro para tu
+        tranquilidad digital.
+      </p>
+    </div>
+  </section>
 </MainLayout>
