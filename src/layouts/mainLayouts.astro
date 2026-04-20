@@ -8,8 +8,6 @@ interface Props {
   title?: string;
   description?: string;
 }
-
-const { title = "Mi sitio", description = "Descripción" } = Astro.props;
 ---
 
 <!doctype html>
@@ -17,9 +15,9 @@ const { title = "Mi sitio", description = "Descripción" } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
+    <title>{Astro.props.title}</title>
     <link rel="icon" href="/favicon.png" type="image/png" />
-    <meta name="description" content={description} />
+    <meta name="description" content={Astro.props.description} />
   </head>
   <body>
     <div class="site-bg">
