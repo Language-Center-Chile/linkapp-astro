@@ -1,0 +1,47 @@
+---
+import MainLayout from '../layouts/mainLayouts.astro';
+import Carta from '../components/ui/cards/carta.astro';
+---
+
+<MainLayout
+  title='Suscripción | LinkApps'
+  description='¡Gracias por tu interés en suscribirte a LinkApps! Con una suscripción, podrás disfrutar de características exclusivas y apoyar el desarrollo continuo de nuestra plataforma.'
+>
+<div class="cards-container">
+  <Carta 
+    title='Comunidad LinkApps'
+    description='Perfil básico personal con acceso a funciones limitadas.'
+    price='FREE'
+    pricedescriptor={null}
+    texto='Empieza Ahora'
+    features={['✓ Perfil básico personal', '✓ Hasta 3 carpetas con 2 enlaces activos']}
+  />
+  <Carta 
+    title='Plus Para Creadores'
+    description='Incluye todas las características del plan básico más extras.'
+    price='$5.99'
+    pricedescriptor='/Mensual'
+    texto='Elige Plus'
+    features={['✓ Links ilimitados en las carpetas', '✓ Código QR premium para compartir enlaces', '✓ Carpetas ilimitadas con links activos']}
+  />
+  <Carta 
+    title='Business Para Empresas'
+    description='Incluye todas las características del plan pro más soporte prioritario.'
+    price='$9.99'
+    pricedescriptor='/Mensual'
+    texto='Elige Business'
+    features={['✓ Todo lo del plan Plus', '✓ Dominio personalizado', '✓ Analíticas avanzadas', '✓ Eliminación de marca']}
+  />
+</div>
+
+<style>
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 2rem;
+    padding: 2rem;
+  }
+</style>
+</MainLayout>

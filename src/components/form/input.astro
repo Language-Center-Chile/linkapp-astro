@@ -1,0 +1,16 @@
+---
+import './styles.css';
+const { label = "Name", ...props } = Astro.props;
+type LabelChar = string;
+type LabelIdx = number;
+---
+
+<div class="wave-group">
+  <input required type="text" class="input" {...props}>
+  <span class="bar"></span>
+  <label class="label">
+    {(label.split("") as LabelChar[]).map((char: LabelChar, idx: LabelIdx) => (
+      <span class="label-char" style={`--index: ${idx}`}>{char}</span>
+    ))}
+  </label>
+</div>
