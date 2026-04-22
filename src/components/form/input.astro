@@ -1,6 +1,11 @@
 ---
 import './styles.css';
-const { label = "Name", ...props } = Astro.props;
+
+
+interface Props {
+  label: string;
+}
+let { label = "", ...props } = Astro.props;
 type LabelChar = string;
 type LabelIdx = number;
 ---
