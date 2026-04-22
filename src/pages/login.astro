@@ -7,7 +7,16 @@ import Form from '../components/form/form.astro';
   title="Iniciar Sesión | LinkApps"
   description="Accede a tu cuenta en LinkApps y gestiona tus enlaces personalizados de manera eficiente."
 >
-<Form titulo="Sign In" input1="Username" input2="Password" texto-boton="Login" texto-boton2="Register" texto-boton3="Forgot Password" />
+<Form
+  titulo="Iniciar Sesión"
+  input1="Email"
+  input2="Password"
+  textoBoton="Iniciar Sesión"
+  textoBoton2="Registrarse"
+  href2="/register"
+  textoBoton3="Olvidé mi contraseña"
+  mode="login"
+/>
 
 
 

@@ -1,17 +1,32 @@
 ---
-import './styles.css';
-
+import "./styles.css";
 
 interface Props {
   label: string;
+  type?: string;
+  name?: string;
+  autocomplete?: string;
+  required?: boolean;
 }
-let { label = "", ...props } = Astro.props;
+
+const {
+  label = "",
+  type = "text",
+  required = true,
+  ...props
+} = Astro.props;
+
 type LabelChar = string;
 type LabelIdx = number;
 ---
 
 <div class="wave-group">
-  <input required type="text" class="input" {...props}>
+  <input
+    class="input"
+    type={type}
+    required={required}
+    {...props}
+  />
   <span class="bar"></span>
   <label class="label">
     {(label.split("") as LabelChar[]).map((char: LabelChar, idx: LabelIdx) => (

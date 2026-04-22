@@ -1,10 +1,21 @@
 ---
-
 interface Props {
-  "texto-boton": string;
+  textoBoton: string;
   class?: string;
+  type?: "submit" | "button" | "reset";
+  href?: string;
 }
 
-const { "texto-boton": textoBoton, class: className = "button1" } = Astro.props;
+const {
+  textoBoton,
+  class: className = "button1",
+  type = "submit",
+  href,
+  ...props
+} = Astro.props;
 ---
-<button class={className}>{textoBoton}</button>
+
+{href
+  ? <a href={href} class={className} {...props}>{textoBoton}</a>
+  : <button class={className} type={type} {...props}>{textoBoton}</button>
+}

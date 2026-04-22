@@ -1,7 +1,7 @@
 ---
 import Input from "./input.astro";
 import Button from "./button.astro";
-import './styles.css';
+import "./styles.css";
 
 interface Props {
   titulo: string;
@@ -9,16 +9,32 @@ interface Props {
   input2: string;
   input3?: string;
   input4?: string;
-  "texto-boton": string;
-  "texto-boton2"?: string;
-  "texto-boton3"?: string;
+  textoBoton: string;
+  textoBoton2?: string;
+  textoBoton3?: string;
+  href2?: string;
+  href3?: string;
+  mode?: "login" | "register";
 }
 
-const { titulo, input1, input2, input3, input4, "texto-boton": textoBoton, "texto-boton2": textoBoton2, "texto-boton3": textoBoton3 } = Astro.props;
+const {
+  titulo,
+  input1,
+  input2,
+  input3,
+  input4,
+  textoBoton,
+  textoBoton2,
+  textoBoton3,
+  href2,
+  href3,
+  mode = "register",
+} = Astro.props;
 ---
 
-<form class="form">
+<form class="form" id="auth-form" data-mode={mode} method="POST">
   <p id="heading">{titulo}</p>
+
   <div class="field">
     <svg
       class="input-icon"
@@ -31,16 +47,36 @@ const { titulo, input1, input2, input3, input4, "texto-boton": textoBoton, "text
     >
       <path d="M13.106 7.222c0-2.967-2.249-5.032-5.482-5.032-3.35 0-5.646 2.318-5.646 5.702 0 3.493 2.235 5.708 5.762 5.708.862 0 1.689-.123 2.304-.335v-.862c-.43.199-1.354.328-2.29.328-2.926 0-4.813-1.88-4.813-4.798 0-2.844 1.921-4.881 4.594-4.881 2.735 0 4.608 1.688 4.608 4.156 0 1.682-.554 2.769-1.416 2.769-.492 0-.772-.28-.772-.76V5.206H8.923v.834h-.11c-.266-.595-.881-.964-1.6-.964-1.4 0-2.378 1.162-2.378 2.823 0 1.737.957 2.906 2.379 2.906.8 0 1.415-.39 1.709-1.087h.11c.081.67.703 1.148 1.503 1.148 1.572 0 2.57-1.415 2.57-3.643zm-7.177.704c0-1.197.54-1.907 1.456-1.907.93 0 1.524.738 1.524 1.907S8.308 9.84 7.371 9.84c-.895 0-1.442-.725-1.442-1.914z"></path>
     </svg>
-    <Input label={input1} autocomplete="off" type="text" />
+    <Input
+      name={mode === "login" ? "email" : "username"}
+      label={input1}
+      autocomplete={mode === "login" ? "email" : "username"}
+      type={mode === "login" ? "email" : "text"}
+    />
   </div>
+
   {input3 && (
     <div class="field">
-      <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+      <svg
+        class="input-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+        aria-hidden="true"
+      >
         <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
       </svg>
-      <Input label={input3} autocomplete="off" type="email" />
+      <Input
+        name="email"
+        label={input3}
+        autocomplete="email"
+        type="email"
+      />
     </div>
   )}
+
   <div class="field">
     <svg
       class="input-icon"
@@ -53,20 +89,322 @@ const { titulo, input1, input2, input3, input4, "texto-boton": textoBoton, "text
     >
       <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"></path>
     </svg>
-    <Input label={input2} type="password" />
+    <Input
+      name="password"
+      label={input2}
+      autocomplete="new-password"
+      type="password"
+    />
   </div>
+
   {input4 && (
     <div class="field">
-      <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+      <svg
+        class="input-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        viewBox="0 0 16 16"
+        aria-hidden="true"
+      >
         <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
       </svg>
-      <Input label={input4} type="password" />
+      <Input
+        name="confirmPassword"
+        label={input4}
+        autocomplete="new-password"
+        type="password"
+      />
     </div>
   )}
+
   <div class="btn">
-    <Button texto-boton={textoBoton} />
-    {textoBoton2 && <Button class="button2" texto-boton={textoBoton2} />}
+    <Button textoBoton={textoBoton} type="submit" />
+    {textoBoton2 && <Button class="button2" textoBoton={textoBoton2} href={href2} type="button" />}
   </div>
-  {textoBoton3 && <Button class="button3" texto-boton={textoBoton3} />}
+
+  {textoBoton3 && <Button class="button3" textoBoton={textoBoton3} href={href3} type="button" />}
+
+  <p id="form-message"></p>
 </form>
 
+<!-- Modal confirmación de email -->
+<div id="email-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
+      </svg>
+    </div>
+    <h2 id="modal-title">¡Revisa tu correo!</h2>
+    <p>Te enviamos un enlace de confirmación a <strong id="modal-email"></strong>. Ábrelo para activar tu cuenta.</p>
+    <button id="modal-close" class="modal-btn">Entendido</button>
+  </div>
+</div>
+<!-- Modal de Las contraseñas no coinciden -->
+<div id="password-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="password-modal-title">
+    <div class="modal-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+      </svg>
+    </div>
+    <h2 id="password-modal-title">¡Error de contraseña!</h2>
+    <p>Las contraseñas que ingresaste no coinciden. Por favor, inténtalo de nuevo.</p>
+    <button id="password-modal-close" class="modal-btn">Entendido</button>
+  </div>
+</div>
+<!-- Modal de La contraseña incorrecta -->
+<div id="incorrect-password-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="incorrect-password-modal-title">
+    <div class="modal-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+      </svg>
+    </div>
+    <h2 id="incorrect-password-modal-title">¡Credenciales incorrectas!</h2>
+    <p>El email o la contraseña que ingresaste no son correctos. Por favor, inténtalo de nuevo.</p>
+    <button id="incorrect-password-modal-close" class="modal-btn">Entendido</button>
+  </div>
+</div>
+
+<!-- Modal de la contraseña debe ser más larga -->
+<div id="short-password-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="short-password-modal-title">
+    <div class="modal-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+      </svg>
+    </div>
+    <h2 id="short-password-modal-title">¡Contraseña   demasiado corta!</h2>
+    <p>La contraseña debe tener al menos 6 caracteres. Por favor, elige una contraseña más segura.</p>
+    <button id="short-password-modal-close" class="modal-btn">Entendido</button>
+  </div>
+</div>
+
+<!-- Modal de limite de emails -->
+<div id="rate-limit-modal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="rate-limit-modal-title">
+    <div class="modal-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+      </svg>
+    </div>
+    <h2 id="rate-limit-modal-title">¡Demasiados intentos!</h2>
+    <p>Has superado el límite de envíos de email. Espera unos minutos antes de intentarlo de nuevo.</p>
+    <button id="rate-limit-modal-close" class="modal-btn">Entendido</button>
+  </div>
+</div>
+
+
+
+<script>
+  const form = document.getElementById("auth-form") as HTMLFormElement | null;
+  const message = document.getElementById("form-message") as HTMLElement | null;
+  const mode = form?.dataset.mode ?? "register";
+  const passwordModal = document.getElementById("password-modal");
+  const passwordModalClose = document.getElementById("password-modal-close");
+  const incorrectPasswordModal = document.getElementById("incorrect-password-modal");
+  const incorrectPasswordModalClose = document.getElementById("incorrect-password-modal-close");
+  const shortPasswordModal = document.getElementById("short-password-modal");
+  const shortPasswordModalClose = document.getElementById("short-password-modal-close");
+  const rateLimitModal = document.getElementById("rate-limit-modal");
+  const rateLimitModalClose = document.getElementById("rate-limit-modal-close");
+
+  passwordModalClose?.addEventListener("click", () => {
+    passwordModal?.classList.remove("modal-visible");
+    passwordModal?.setAttribute("aria-hidden", "true");
+  });
+
+  incorrectPasswordModalClose?.addEventListener("click", () => {
+    incorrectPasswordModal?.classList.remove("modal-visible");
+    incorrectPasswordModal?.setAttribute("aria-hidden", "true");
+  });
+
+  shortPasswordModalClose?.addEventListener("click", () => {
+    shortPasswordModal?.classList.remove("modal-visible");
+    shortPasswordModal?.setAttribute("aria-hidden", "true");
+  });
+
+  rateLimitModalClose?.addEventListener("click", () => {
+    rateLimitModal?.classList.remove("modal-visible");
+    rateLimitModal?.setAttribute("aria-hidden", "true");
+  });
+
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!form || !message) return;
+
+    const formData = new FormData(form);
+
+    if (mode === "login") {
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+
+      if (!email || !password) {
+        incorrectPasswordModal?.classList.add("modal-visible");
+        incorrectPasswordModal?.setAttribute("aria-hidden", "false");
+        return;
+      }
+
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        incorrectPasswordModal?.classList.add("modal-visible");
+        incorrectPasswordModal?.setAttribute("aria-hidden", "false");
+        return;
+      }
+
+      message.textContent = "¡Bienvenido!";
+      setTimeout(() => { window.location.href = "/"; }, 800);
+
+    } else {
+      const username = formData.get("username") as string;
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+      const confirmPassword = formData.get("confirmPassword") as string;
+
+      if (!username || !email || !password || !confirmPassword) {
+        message.textContent = "Completa todos los campos";
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        passwordModal?.classList.add("modal-visible");
+        passwordModal?.setAttribute("aria-hidden", "false");
+        return;
+      }
+
+      if (password.length < 6) {
+        shortPasswordModal?.classList.add("modal-visible");
+        shortPasswordModal?.setAttribute("aria-hidden", "false");
+        return;
+      }
+
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        if (result.message?.toLowerCase().includes("rate limit") || result.message?.toLowerCase().includes("email rate")) {
+          rateLimitModal?.classList.add("modal-visible");
+          rateLimitModal?.setAttribute("aria-hidden", "false");
+        } else {
+          message.textContent = result.message || "Error al registrarse";
+        }
+        return;
+      }
+
+      message.textContent = "Cuenta creada correctamente";
+      form.reset();
+
+      // Mostrar modal de confirmación de email
+      const modal = document.getElementById("email-modal");
+      const modalEmail = document.getElementById("modal-email");
+      if (modal && modalEmail) {
+        modalEmail.textContent = email;
+        modal.setAttribute("aria-hidden", "false");
+        modal.classList.add("modal-visible");
+      }
+
+      document.getElementById("modal-close")?.addEventListener("click", () => {
+        const modal = document.getElementById("email-modal");
+        modal?.classList.remove("modal-visible");
+        modal?.setAttribute("aria-hidden", "true");
+        setTimeout(() => { window.location.href = "/login"; }, 300);
+      });
+    }
+  });
+</script>
+
+<style>
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.modal-visible {
+    display: flex;
+    animation: fadeIn 0.25s ease;
+  }
+
+  .modal-box {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 20px;
+    padding: 2.5em 2em;
+    max-width: 360px;
+    width: 90%;
+    text-align: center;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    animation: slideUp 0.3s ease;
+  }
+
+  .modal-icon {
+    color: #5264AE;
+  }
+
+  .modal-box h2 {
+    font-size: 1.3em;
+    margin: 0;
+  }
+
+  .modal-box p {
+    color: #aaa;
+    font-size: 0.95em;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .modal-box strong {
+    color: white;
+  }
+
+  .modal-btn {
+    margin-top: 0.5em;
+    padding: 0.6em 2em;
+    border-radius: 8px;
+    border: none;
+    background: #5264AE;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .modal-btn:hover {
+    background: #3a4a8a;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+</style>
