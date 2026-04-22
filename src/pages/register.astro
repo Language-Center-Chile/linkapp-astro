@@ -1,11 +1,11 @@
 ---
 import MainLayout from '../layouts/mainLayouts.astro';
-import Form from '../components/form.astro';
+import Form from '../components/form/form.astro';
 ---
 
 <MainLayout
-  title="Acerca de | LinkApps"
-  description="Descubre más sobre LinkApps, tu plataforma de gestión de enlaces personalizada. Aprende sobre nuestra misión, visión y el equipo detrás de la aplicación."
+  title="Registrarse | LinkApps"
+  description="Crea tu cuenta en LinkApps y empieza a gestionar tus enlaces personalizados."
 >
-  <Form lugar1="/login" lugar2={null} lugar3="Register" />
+  <Form titulo="register" input1="Username" input3="E-mail" input2="Password" input4="Confirm Password" texto-boton="Registrarse" />
 </MainLayout>
