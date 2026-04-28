@@ -84,8 +84,8 @@ if (!user) {
   // Nota: Para QRCode en Astro/Vite, podrías necesitar instalarlo vía npm: npm install qrcodejs. 
   // O usar una versión compatible con módulos.
 
-  const SUPABASE_URL = 'https://ioekbpgxywkvmxvfzblz.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlvZWticGd4eXdrdm14dmZ6Ymx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwMjYzMDEsImV4cCI6MjA4NTYwMjMwMX0.of00FGlEr8tLpyXkWk0ZuiKhiYsjenA9YPHUfvOGYOs'; // Idealmente usar import.meta.env.PUBLIC_SUPABASE_KEY
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
+  const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   let carpetas = [];
