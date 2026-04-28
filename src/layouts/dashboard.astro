@@ -1,12 +1,16 @@
 ---
-import "../styles/global.css";
-import Header from "../components/shared/header.astro";
-import Footer from "../components/shared/footer.astro";
-import FloatingLines from "@/components/shared/FloatingLines";
+import MainLayout from "../layouts/mainLayouts.astro";
+import { createClient } from "@/lib/supabase"; // Ajusta la ruta si es necesario
 
-interface Props {
-  title?: string;
-  description?: string;
+// Creamos el cliente pasando el contexto actual
+const supabase = createClient(Astro); 
+
+// Ahora puedes usarlo en el lado del servidor (opcional)
+const { data: { user } } = await supabase.auth.getUser();
+
+// Si no hay usuario, lo mandamos al login (Protección de ruta real)
+if (!user) {
+  return Astro.redirect("/login");
 }
 ---
 
