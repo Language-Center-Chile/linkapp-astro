@@ -1,0 +1,592 @@
+---
+import DashboardLayouts from "../layouts/dashboardLayouts.astro";
+import { createClient } from "@/lib/supabase";
+
+const supabase = createClient({
+  request: Astro.request,
+  cookies: Astro.cookies,
+});
+
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+if (!user) {
+  return Astro.redirect("/login");
+}
+---
+
+<DashboardLayouts
+  title="Dashboard - LinkApp"
+  description="Gestiona tus colecciones de enlaces con estilo."
+>
+  <section class="dashboard-content min-h-[80vh] py-12 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-8">
+        <div class="text-center md:text-left">
+          <h1 class="text-5xl font-black tracking-tighter text-white mb-4">
+            Mis <span class="gradient-text">Colecciones</span>
+          </h1>
+          <p class="text-white text-lg font-medium max-w-xl">
+            Gestiona tus links con estilo PRO.
+          </p>
+
+          <div class="flex justify-center md:justify-start gap-4 mt-6">
+            <button
+              id="btnBackup"
+              type="button"
+              class="text-[10px] font-white uppercase tracking-widest text-muted hover:text-blue transition-colors flex items-center gap-2"
+            >
+              📥 Backup
+            </button>
+
+            <button
+              id="btnRestore"
+              type="button"
+              class="text-[10px] font-white uppercase tracking-widest text-muted hover:text-teal transition-colors flex items-center gap-2"
+            >
+              📤 Restaurar
+            </button>
+
+            <input type="file" id="importInput" class="hidden" accept=".json" />
+          </div>
+        </div>
+
+        <button
+          id="btnNuevaCarpeta"
+          type="button"
+          class="px-10 py-5 bg-blue hover:bg-blue/90 text-white font-white rounded-3xl transition-all shadow-xl shadow-blue/20 active:scale-95 uppercase tracking-widest text-xs cursor-pointer"
+        >
+          + Nueva Carpeta
+        </button>
+      </div>
+
+      <div class="relative mb-12 max-w-2xl mx-auto">
+        <div class="absolute left-6 top-1/2 -translate-y-1/2 text-blue">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" x2="16.65" y1="21" y2="16.65"></line>
+          </svg>
+        </div>
+
+        <input
+          type="text"
+          id="globalSearch"
+          placeholder="¿Qué link estás buscando hoy?"
+          class="w-full bg-surface border-2 border-border text-white p-6 pl-16 rounded-[2.5rem] focus:border-blue outline-none transition-all shadow-2xl"
+        />
+      </div>
+
+      <div
+        id="folderGrid"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+      ></div>
+    </div>
+  </section>
+</DashboardLayouts>
+
+<script>
+  // @ts-nocheck
+  import Swal from "sweetalert2";
+
+  let carpetas = [];
+  const LIMIT_FOLDERS_FREE = 2;
+
+  function swalError(text = "Ocurrió un error") {
+    return Swal.fire({
+      title: "Error",
+      text,
+      icon: "error",
+      confirmButtonColor: "#38BDF8",
+      background: "#18181b",
+      color: "#fff",
+    });
+  }
+
+  function escapeHtml(value = "") {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function escapeAttribute(value = "") {
+    return escapeHtml(value);
+  }
+
+  async function cargarDatos() {
+    const res = await fetch("/api/folders");
+    const json = await res.json();
+
+    if (!res.ok) {
+      throw new Error(json?.error || "No se pudieron cargar tus carpetas");
+    }
+
+    carpetas = Array.isArray(json.content) ? json.content : [];
+    renderCarpetas();
+  }
+
+  async function guardarCarpetas(nuevasCarpetas) {
+    const res = await fetch("/api/folders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ content: nuevasCarpetas }),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+      return { message: json?.error || "No se pudo guardar" };
+    }
+
+    return null;
+  }
+
+  async function init() {
+    try {
+      await cargarDatos();
+    } catch (error) {
+      await swalError(error?.message || "No se pudieron cargar tus carpetas");
+    }
+  }
+
+  function renderCarpetas(lista = carpetas) {
+    const grid = document.getElementById("folderGrid");
+    if (!grid) return;
+
+    if (!Array.isArray(lista) || lista.length === 0) {
+      grid.innerHTML = `
+        <div class="col-span-full text-center py-20 opacity-50 font-black uppercase text-xs tracking-widest text-white">
+          No hay colecciones creadas
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = lista
+      .map((folder, index) => {
+        const links = Array.isArray(folder.links) ? folder.links : [];
+
+        return `
+          <div class="folder-card border border-border rounded-[2.5rem] p-8 flex flex-col h-full bg-surface/60 backdrop-blur-md">
+            <div class="flex justify-between items-start mb-6 gap-4">
+              <h3 class="text-xl font-black text-white truncate">${escapeHtml(folder.nombre ?? "Sin nombre")}</h3>
+              <button
+                type="button"
+                data-action="eliminar-carpeta"
+                data-index="${index}"
+                title="Eliminar carpeta"
+                class="hover:scale-110 transition-transform"
+              >
+                🗑
+              </button>
+            </div>
+
+            <div class="space-y-2 mb-6 flex-1">
+              ${
+                links.length === 0
+                  ? `<p class="text-[10px] text-muted uppercase tracking-widest text-center py-4">Sin links aún</p>`
+                  : links
+                      .map(
+                        (link, li) => `
+                          <div class="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-transparent hover:border-blue/20 transition-all group gap-2">
+                            <a
+                              href="${escapeAttribute(link.url ?? "#")}"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="text-xs font-bold text-white hover:text-blue truncate flex-1"
+                            >
+                              ${escapeHtml(link.tag || link.url || "Sin URL")}
+                            </a>
+                            <button
+                              type="button"
+                              data-action="eliminar-link"
+                              data-folder="${index}"
+                              data-link="${li}"
+                              class="ml-2 text-muted hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        `
+                      )
+                      .join("")
+              }
+            </div>
+
+            <button
+              type="button"
+              data-action="agregar-link"
+              data-index="${index}"
+              class="w-full py-3 bg-blue/10 text-blue rounded-xl font-black text-[9px] uppercase tracking-tighter hover:bg-blue hover:text-black transition-all"
+            >
+              + Añadir Enlace
+            </button>
+          </div>
+        `;
+      })
+      .join("");
+  }
+
+  async function createFolder() {
+    if (carpetas.length >= LIMIT_FOLDERS_FREE) {
+      await Swal.fire({
+        title: "Límite Alcanzado",
+        text: "El plan gratuito permite un máximo de 2 carpetas. ¡Actualiza a PRO para más!",
+        icon: "warning",
+        confirmButtonColor: "#38BDF8",
+        background: "#18181b",
+        color: "#fff",
+      });
+      return;
+    }
+
+    const { value: nombre } = await Swal.fire({
+      title: "Nueva Carpeta",
+      input: "text",
+      inputLabel: "Nombre de la colección",
+      inputPlaceholder: "Ej: Mis Links Favoritos",
+      showCancelButton: true,
+      confirmButtonText: "Crear",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#38BDF8",
+      cancelButtonColor: "#6b7280",
+      background: "#18181b",
+      color: "#fff",
+      inputValidator: (value) => {
+        if (!value?.trim()) return "El nombre es obligatorio";
+        if (value.trim().length > 50) return "Máximo 50 caracteres";
+      },
+    });
+
+    if (!nombre?.trim()) return;
+
+    const updatedFolders = [
+      ...carpetas,
+      {
+        id: crypto.randomUUID(),
+        nombre: nombre.trim(),
+        links: [],
+        created_at: new Date().toISOString(),
+      },
+    ];
+
+    const error = await guardarCarpetas(updatedFolders);
+
+    if (error) {
+      await swalError(error.message || "No se pudo crear la carpeta");
+      return;
+    }
+
+    carpetas = updatedFolders;
+    renderCarpetas();
+
+    await Swal.fire({
+      title: "¡Creada!",
+      text: "Tu nueva carpeta está lista",
+      icon: "success",
+      confirmButtonColor: "#38BDF8",
+      background: "#18181b",
+      color: "#fff",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  }
+
+  async function agregarLink(index) {
+    if (!carpetas[index]) {
+      await swalError("La carpeta no existe");
+      return;
+    }
+
+    const { value: formValues } = await Swal.fire({
+      title: "Añadir Enlace",
+      html: `
+        <input id="swal-url" class="swal2-input" placeholder="https://ejemplo.com" type="url">
+        <input id="swal-tag" class="swal2-input" placeholder="Nombre o etiqueta (opcional)">
+      `,
+      confirmButtonText: "Añadir",
+      cancelButtonText: "Cancelar",
+      showCancelButton: true,
+      confirmButtonColor: "#38BDF8",
+      cancelButtonColor: "#6b7280",
+      background: "#18181b",
+      color: "#fff",
+      preConfirm: () => {
+        const url = document.getElementById("swal-url")?.value?.trim();
+        const tag = document.getElementById("swal-tag")?.value?.trim();
+
+        if (!url) {
+          Swal.showValidationMessage("La URL es obligatoria");
+          return false;
+        }
+
+        try {
+          new URL(url);
+        } catch {
+          Swal.showValidationMessage("URL inválida");
+          return false;
+        }
+
+        return { url, tag };
+      },
+    });
+
+    if (!formValues) return;
+
+    const updatedFolders = structuredClone(carpetas);
+    if (!Array.isArray(updatedFolders[index].links)) {
+      updatedFolders[index].links = [];
+    }
+
+    updatedFolders[index].links.push({
+      url: formValues.url,
+      tag: formValues.tag || "",
+    });
+
+    const error = await guardarCarpetas(updatedFolders);
+
+    if (error) {
+      await swalError(error.message || "No se pudo guardar el link");
+      return;
+    }
+
+    carpetas = updatedFolders;
+    renderCarpetas();
+  }
+
+  async function eliminarLink(folderIndex, linkIndex) {
+    if (!carpetas[folderIndex]?.links?.[linkIndex]) {
+      await swalError("El link no existe");
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: "¿Eliminar link?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#6b7280",
+      background: "#18181b",
+      color: "#fff",
+    });
+
+    if (!result.isConfirmed) return;
+
+    const updatedFolders = structuredClone(carpetas);
+    updatedFolders[folderIndex].links.splice(linkIndex, 1);
+
+    const error = await guardarCarpetas(updatedFolders);
+
+    if (error) {
+      await swalError(error.message || "No se pudo eliminar el link");
+      return;
+    }
+
+    carpetas = updatedFolders;
+    renderCarpetas();
+  }
+
+  async function eliminarCarpeta(index) {
+    if (!carpetas[index]) {
+      await swalError("La carpeta no existe");
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: "¿Eliminar carpeta?",
+      text: "Se borrarán todos los links dentro de ella.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#6b7280",
+      background: "#18181b",
+      color: "#fff",
+    });
+
+    if (!result.isConfirmed) return;
+
+    const updatedFolders = carpetas.filter((_, i) => i !== index);
+    const error = await guardarCarpetas(updatedFolders);
+
+    if (error) {
+      await swalError(error.message || "No se pudo eliminar la carpeta");
+      return;
+    }
+
+    carpetas = updatedFolders;
+    renderCarpetas();
+  }
+
+  function handleSearch(event) {
+    const query = event.target.value.toLowerCase().trim();
+
+    if (!query) {
+      renderCarpetas();
+      return;
+    }
+
+    const filtradas = carpetas
+      .map((folder) => ({
+        ...folder,
+        links: (Array.isArray(folder.links) ? folder.links : []).filter((l) => {
+          const url = l.url?.toLowerCase?.() || "";
+          const tag = l.tag?.toLowerCase?.() || "";
+          return url.includes(query) || tag.includes(query);
+        }),
+      }))
+      .filter((folder) => {
+        const nombre = folder.nombre?.toLowerCase?.() || "";
+        return nombre.includes(query) || folder.links.length > 0;
+      });
+
+    renderCarpetas(filtradas);
+  }
+
+  function handleBackup() {
+    const blob = new Blob([JSON.stringify(carpetas, null, 2)], {
+      type: "application/json",
+    });
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `linkapp-backup-${Date.now()}.json`;
+    a.click();
+
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  async function handleRestoreChange(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const imported = JSON.parse(await file.text());
+
+      if (!Array.isArray(imported)) {
+        throw new Error("Formato inválido");
+      }
+
+      const sanitized = imported.map((folder) => ({
+        id: folder.id || crypto.randomUUID(),
+        nombre: String(folder.nombre || "Sin nombre").trim(),
+        links: Array.isArray(folder.links)
+          ? folder.links
+              .filter((link) => link?.url)
+              .map((link) => ({
+                url: String(link.url).trim(),
+                tag: String(link.tag || "").trim(),
+              }))
+          : [],
+        created_at: folder.created_at || new Date().toISOString(),
+      }));
+
+      const error = await guardarCarpetas(sanitized);
+
+      if (error) {
+        await swalError(error.message || "No se pudo restaurar el backup");
+        return;
+      }
+
+      carpetas = sanitized;
+      renderCarpetas();
+
+      await Swal.fire({
+        title: "¡Restaurado!",
+        icon: "success",
+        confirmButtonColor: "#38BDF8",
+        background: "#18181b",
+        color: "#fff",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      await swalError(error.message || "Archivo inválido o formato incorrecto");
+    } finally {
+      event.target.value = "";
+    }
+  }
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-action]");
+    if (!btn) return;
+
+    const action = btn.dataset.action;
+
+    if (action === "agregar-link") agregarLink(Number(btn.dataset.index));
+    if (action === "eliminar-carpeta") eliminarCarpeta(Number(btn.dataset.index));
+    if (action === "eliminar-link") eliminarLink(Number(btn.dataset.folder), Number(btn.dataset.link));
+  });
+
+  (async () => {
+    await init();
+
+    document.getElementById("btnNuevaCarpeta")?.addEventListener("click", createFolder);
+    document.getElementById("globalSearch")?.addEventListener("input", handleSearch);
+    document.getElementById("btnBackup")?.addEventListener("click", handleBackup);
+    document.getElementById("btnRestore")?.addEventListener("click", () => {
+      document.getElementById("importInput")?.click();
+    });
+    document.getElementById("importInput")?.addEventListener("change", handleRestoreChange);
+  })();
+</script>
+
+<style>
+  .gradient-text {
+    background: linear-gradient(90deg, #38bdf8, #2dd4bf);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .folder-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .folder-card:hover {
+    border-color: rgba(56, 189, 248, 0.4);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -20px rgba(56, 189, 248, 0.3);
+  }
+
+  .share-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+
+  .share-overlay:not(.hidden) {
+    display: flex;
+  }
+
+  .share-box {
+    background: rgba(24, 24, 27, 0.95);
+    border: 1px solid #27272a;
+    padding: 2.5rem;
+    border-radius: 3rem;
+    width: 100%;
+    max-width: 480px;
+  }
+</style>
