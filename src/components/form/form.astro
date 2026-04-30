@@ -265,7 +265,7 @@ const {
       }
 
       message.textContent = "¡Bienvenido!";
-      setTimeout(() => { window.location.href = "/"; }, 800);
+      setTimeout(() => { window.location.href = "/dashboard"; }, 800);
 
     } else {
       const username = formData.get("username") as string;
@@ -310,22 +310,7 @@ const {
 
       message.textContent = "Cuenta creada correctamente";
       form.reset();
-
-      // Mostrar modal de confirmación de email
-      const modal = document.getElementById("email-modal");
-      const modalEmail = document.getElementById("modal-email");
-      if (modal && modalEmail) {
-        modalEmail.textContent = email;
-        modal.setAttribute("aria-hidden", "false");
-        modal.classList.add("modal-visible");
-      }
-
-      document.getElementById("modal-close")?.addEventListener("click", () => {
-        const modal = document.getElementById("email-modal");
-        modal?.classList.remove("modal-visible");
-        modal?.setAttribute("aria-hidden", "true");
-        setTimeout(() => { window.location.href = "/login"; }, 300);
-      });
+      setTimeout(() => { window.location.href = "/login"; }, 800);
     }
   });
 </script>
