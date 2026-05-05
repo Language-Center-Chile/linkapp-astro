@@ -1,9 +1,12 @@
 ---
-import { createClient } from "@/lib/supabase"; // Importamos tu cliente de servidor
+// src/components/shared/header.astro
+const { user } = Astro.props;
 
-// 1. Verificamos la sesión en el servidor antes de renderizar la página
-const supabase = createClient(Astro);
-const { data: { user } } = await supabase.auth.getUser();
+// ESTO APARECERÁ EN TU TERMINAL DE VS CODE (No en el navegador)
+console.log("ESTADO DEL USUARIO EN EL HEADER:", user ? "CONECTADO" : "INVITADO");
+if (user) {
+  console.log("EMAIL DEL USUARIO:", user.email);
+}
 ---
 
 <header class="border-b border-border sticky top-0 bg-black/80 backdrop-blur-md z-50">
@@ -93,30 +96,27 @@ const { data: { user } } = await supabase.auth.getUser();
 <script>
   import { supabaseBrowser } from "@/lib/supabase";
 
-  // Seleccionamos todos los botones de logout (Desktop y Móvil)
   const logoutButtons = document.querySelectorAll('#logout-btn, #logout-btn-mobile');
   
   logoutButtons.forEach(btn => {
     btn.addEventListener('click', async (e) => {
-      e.preventDefault(); // Evitamos cualquier comportamiento por defecto
+      e.preventDefault();
       
-      try {
-        // 1. Cerramos sesión en Supabase (Limpia el LocalStorage)
-        const { error } = await supabaseBrowser.auth.signOut();
-        
-        if (error) {
-          console.error("Error al cerrar sesión:", error.message);
-          return;
-        }
-
-        // 2. IMPORTANTE: Forzamos una recarga completa al inicio
-        // Al usar window.location.href, Astro procesa la petición de nuevo
-        // y el middleware/cliente de servidor detectará que ya no hay sesión.
-        window.location.href = "/"; 
-        
-      } catch (err) {
-        console.error("Error inesperado:", err);
+      // 1. Cerrar sesión en el cliente de Supabase
+      await supabaseBrowser.auth.signOut();
+      
+      // 2. Limpiar cookies del navegador manualmente para asegurar que Astro no las lea
+      // Esto elimina los tokens que el servidor de Supabase SSR utiliza
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
       }
+
+      // 3. Redirigir y forzar recarga total
+      window.location.href = "/"; 
     });
   });
 </script>

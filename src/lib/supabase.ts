@@ -30,3 +30,10 @@ export function createClient({
     }
   );
 }
+// Al final de src/lib/supabase.ts
+import { createClient as createBrowserClient } from "@supabase/supabase-js";
+
+export const supabaseBrowser = createBrowserClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY
+);

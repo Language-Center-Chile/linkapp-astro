@@ -142,7 +142,7 @@ const {
     <button id="modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
-<!-- Modal de Las contraseñas no coinciden -->
+<!-- Modales de error (Mantenidos intactos) -->
 <div id="password-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="password-modal-title">
     <div class="modal-icon">
@@ -155,7 +155,6 @@ const {
     <button id="password-modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
-<!-- Modal de La contraseña incorrecta -->
 <div id="incorrect-password-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="incorrect-password-modal-title">
     <div class="modal-icon">
@@ -168,8 +167,6 @@ const {
     <button id="incorrect-password-modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
-
-<!-- Modal de la contraseña debe ser más larga -->
 <div id="short-password-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="short-password-modal-title">
     <div class="modal-icon">
@@ -177,13 +174,11 @@ const {
         <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
       </svg>
     </div>
-    <h2 id="short-password-modal-title">¡Contraseña   demasiado corta!</h2>
+    <h2 id="short-password-modal-title">¡Contraseña demasiado corta!</h2>
     <p>La contraseña debe tener al menos 6 caracteres. Por favor, elige una contraseña más segura.</p>
     <button id="short-password-modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
-
-<!-- Modal de limite de emails -->
 <div id="rate-limit-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="rate-limit-modal-title">
     <div class="modal-icon">
@@ -197,8 +192,6 @@ const {
     <button id="rate-limit-modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
-
-
 
 <script>
   const form = document.getElementById("auth-form") as HTMLFormElement | null;
@@ -233,7 +226,6 @@ const {
     rateLimitModal?.setAttribute("aria-hidden", "true");
   });
 
-
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!form || !message) return;
@@ -265,7 +257,8 @@ const {
       }
 
       message.textContent = "¡Bienvenido!";
-      setTimeout(() => { window.location.href = "/"; }, 800);
+      // CAMBIO AQUÍ: Redirigir al dashboard en lugar del index
+      setTimeout(() => { window.location.href = "/dashboard"; }, 800);
 
     } else {
       const username = formData.get("username") as string;
@@ -311,7 +304,6 @@ const {
       message.textContent = "Cuenta creada correctamente";
       form.reset();
 
-      // Mostrar modal de confirmación de email
       const modal = document.getElementById("email-modal");
       const modalEmail = document.getElementById("modal-email");
       if (modal && modalEmail) {
@@ -331,6 +323,7 @@ const {
 </script>
 
 <style>
+  /* Tus estilos se mantienen exactamente iguales */
   .modal-overlay {
     display: none;
     position: fixed;
@@ -340,12 +333,7 @@ const {
     align-items: center;
     justify-content: center;
   }
-
-  .modal-overlay.modal-visible {
-    display: flex;
-    animation: fadeIn 0.25s ease;
-  }
-
+  .modal-overlay.modal-visible { display: flex; animation: fadeIn 0.25s ease; }
   .modal-box {
     background: #1e1e1e;
     border: 1px solid #333;
@@ -361,27 +349,10 @@ const {
     gap: 1em;
     animation: slideUp 0.3s ease;
   }
-
-  .modal-icon {
-    color: #5264AE;
-  }
-
-  .modal-box h2 {
-    font-size: 1.3em;
-    margin: 0;
-  }
-
-  .modal-box p {
-    color: #aaa;
-    font-size: 0.95em;
-    margin: 0;
-    line-height: 1.5;
-  }
-
-  .modal-box strong {
-    color: white;
-  }
-
+  .modal-icon { color: #5264AE; }
+  .modal-box h2 { font-size: 1.3em; margin: 0; }
+  .modal-box p { color: #aaa; font-size: 0.95em; margin: 0; line-height: 1.5; }
+  .modal-box strong { color: white; }
   .modal-btn {
     margin-top: 0.5em;
     padding: 0.6em 2em;
@@ -393,18 +364,7 @@ const {
     cursor: pointer;
     transition: background 0.3s ease;
   }
-
-  .modal-btn:hover {
-    background: #3a4a8a;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes slideUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
+  .modal-btn:hover { background: #3a4a8a; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 </style>
