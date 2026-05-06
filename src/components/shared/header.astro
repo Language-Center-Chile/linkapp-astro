@@ -1,49 +1,140 @@
 ---
-import Button from "../ui/buttons/button-nav.astro";
-import Button_CrearCuenta from "../ui/buttons/button.astro";
+// src/components/shared/header.astro
+const { user } = Astro.props;
+
+// ESTO APARECERÁ EN TU TERMINAL DE VS CODE (No en el navegador)
+console.log("ESTADO DEL USUARIO EN EL HEADER:", user ? "CONECTADO" : "INVITADO");
+if (user) {
+  console.log("EMAIL DEL USUARIO:", user.email);
+}
 ---
 
-<nav>
+<header class="border-b border-border sticky top-0 bg-black/80 backdrop-blur-md z-50">
+  <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    
+    <!-- Logo y Nombre -->
+    <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+      <!-- Cambiado a logo.png según tu corrección previa -->
+      <img src="/logo.png" alt="logo" class="w-10 h-12 object-contain">
+      <span class="font-bold text-xl tracking-tighter text-white">LinkApp</span>
+    </a>
 
-<a id="logo" href="/"><img src="/favicon.png" alt="LinkApps logo" height="32" /></a>
-  <div id="nav-links">
-  <a href="/about" style="text-decoration: none;">
-    <Button text="Nosotros" />
-  </a>
-  <a href="/contact" style="text-decoration: none;">
-    <Button text="Contacto" />
-  </a>
-  <a href="/subscription" style="text-decoration: none;">
-    <Button text="Suscripción" />
-  </a>
-</div>
-  <a href="/register" id="btn-iniciar-session">
-    <Button_CrearCuenta text="Crear Cuenta" />
-  </a>
+    <!-- Navegación Desktop -->
+    <nav class="hidden md:flex items-center gap-8 text-sm">
+      <div class="flex gap-6 border-r border-border pr-6 font-medium">
+        <a href="/" class="text-white hover:text-blue transition-colors">Inicio</a>
+        <a href="/about" class="text-muted hover:text-blue transition-colors">Nosotros</a>
+        <a href="/contact" class="text-muted hover:text-blue transition-colors">Contacto</a>
+        <a href="/subscription" class="text-muted hover:text-blue transition-colors">Suscripción</a>
+      </div>
+
+      <!-- Zona de Autenticación Dinámica -->
+      <div class="flex gap-4 items-center">
+        {!user ? (
+          <>
+            <a href="/login" class="px-5 py-2 text-muted hover:text-white transition-colors text-xs font-black uppercase tracking-widest">
+              Login
+            </a>
+            <a href="/register" class="px-5 py-2.5 bg-blue text-black rounded-xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-blue/20">
+              Registrarse
+            </a>
+          </>
+        ) : (
+          <>
+            <a href="/dashboard" class="px-5 py-2.5 bg-teal text-black rounded-xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-teal/20">
+              Mi Panel
+            </a>
+            <button id="logout-btn" class="text-muted hover:text-red-400 transition-colors text-[10px] font-black uppercase tracking-widest">
+              Salir
+            </button>
+          </>
+        )}
+      </div>
+    </nav>
+    
+    <!-- Botón Menú Móvil -->
+    <button id="menu-btn" class="md:hidden text-white text-3xl focus:outline-none hover:text-blue transition-colors">
+      <span id="menu-icon">☰</span>
+    </button>
+  </div>
+
+  <!-- Menú Móvil Dinámico -->
+  <div id="mobile-menu" class="hidden absolute top-20 left-0 w-full bg-black/95 backdrop-blur-xl border-b border-border p-8 flex flex-col items-center text-center gap-6 md:hidden z-40 shadow-2xl">
+    <div class="flex flex-col gap-5 w-full">
+      <a href="/" class="text-white text-lg font-bold uppercase tracking-widest">Inicio</a>
+      <a href="/about" class="text-muted hover:text-blue text-lg font-bold uppercase tracking-widest">Nosotros</a>
+      <a href="/contact" class="text-muted hover:text-blue text-lg font-bold uppercase tracking-widest">Contacto</a>
+      <a href="/subscription" class="text-muted hover:text-blue text-lg font-bold uppercase tracking-widest">Suscripción</a>
+    </div>
+
+    <div class="h-px bg-border w-1/2 my-2"></div>
+
+    <div class="flex flex-col gap-4 w-full max-w-xs">
+      {!user ? (
+        <>
+          <a href="/login" class="text-center py-4 border border-border rounded-xl text-muted hover:text-white text-xs font-black uppercase tracking-widest">
+            Login
+          </a>
+          <a href="/register" class="text-center py-4 bg-blue text-black rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-blue/20">
+            Registrarse
+          </a>
+        </>
+      ) : (
+        <>
+          <a href="/dashboard" class="text-center py-4 bg-teal text-black rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-teal/20">
+            Ir a mi Panel
+          </a>
+          <button id="logout-btn-mobile" class="text-red-400 font-bold uppercase text-[10px] tracking-widest py-2">
+            Cerrar Sesión
+          </button>
+        </>
+      )}
+    </div>
+  </div>
+</header>
+
+<script>
+  import { supabaseBrowser } from "@/lib/supabase";
+
+  const logoutButtons = document.querySelectorAll('#logout-btn, #logout-btn-mobile');
   
-</nav>
+  logoutButtons.forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      // 1. Cerrar sesión en el cliente de Supabase
+      await supabaseBrowser.auth.signOut();
+      
+      // 2. Limpiar cookies del navegador manualmente para asegurar que Astro no las lea
+      // Esto elimina los tokens que el servidor de Supabase SSR utiliza
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+      }
+
+      // 3. Redirigir y forzar recarga total
+      window.location.href = "/"; 
+    });
+  });
+</script>
+
 <style>
-nav {
-    background-color: black;
-    display: flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-}
-#logo img {
-  height: 60px;
-  width: auto;
-  display: block;
-  padding-left: 25px;
-}
-#nav-links {
-  display: flex;
-  gap: 1.5rem;
-  margin-left: auto;
-}
-#btn-iniciar-session{
+  /* Estilos adicionales para asegurar que el menú móvil se vea bien */
+  .text-muted { color: #888; }
+  .bg-blue { background-color: #3b82f6; }
+  .bg-teal { background-color: #14b8a6; }
+  .border-border { border-color: rgba(255, 255, 255, 0.1); }
+  
+  /* Animación simple para el menú móvil */
+  #mobile-menu:not(.hidden) {
+    animation: slideDown 0.3s ease-out forwards;
+  }
 
-  padding-left: 25px;
-
-}
-
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 </style>
