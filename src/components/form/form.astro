@@ -129,7 +129,7 @@ const {
   <p id="form-message"></p>
 </form>
 
-<!-- Modal confirmación de email -->
+<!-- Modal confirmacion de email -->
 <div id="email-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-icon">
@@ -137,12 +137,13 @@ const {
         <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
       </svg>
     </div>
-    <h2 id="modal-title">¡Revisa tu correo!</h2>
-    <p>Te enviamos un enlace de confirmación a <strong id="modal-email"></strong>. Ábrelo para activar tu cuenta.</p>
+    <h2 id="modal-title">Revisa tu correo!</h2>
+    <p>Te enviamos un enlace de confirmacion a <strong id="modal-email"></strong>. Abrelo para activar tu cuenta.</p>
     <button id="modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
-<!-- Modal de Las contraseñas no coinciden -->
+
+<!-- Modales de error -->
 <div id="password-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="password-modal-title">
     <div class="modal-icon">
@@ -150,12 +151,12 @@ const {
         <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
       </svg>
     </div>
-    <h2 id="password-modal-title">¡Error de contraseña!</h2>
-    <p>Las contraseñas que ingresaste no coinciden. Por favor, inténtalo de nuevo.</p>
+    <h2 id="password-modal-title">Error de contrasena!</h2>
+    <p>Las contrasenas que ingresaste no coinciden. Por favor, intentalo de nuevo.</p>
     <button id="password-modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
-<!-- Modal de La contraseña incorrecta -->
+
 <div id="incorrect-password-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="incorrect-password-modal-title">
     <div class="modal-icon">
@@ -163,13 +164,12 @@ const {
         <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
       </svg>
     </div>
-    <h2 id="incorrect-password-modal-title">¡Credenciales incorrectas!</h2>
-    <p>El email o la contraseña que ingresaste no son correctos. Por favor, inténtalo de nuevo.</p>
+    <h2 id="incorrect-password-modal-title">Credenciales incorrectas!</h2>
+    <p>El email o la contrasena que ingresaste no son correctos. Por favor, intentalo de nuevo.</p>
     <button id="incorrect-password-modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
 
-<!-- Modal de la contraseña debe ser más larga -->
 <div id="short-password-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="short-password-modal-title">
     <div class="modal-icon">
@@ -177,13 +177,12 @@ const {
         <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
       </svg>
     </div>
-    <h2 id="short-password-modal-title">¡Contraseña   demasiado corta!</h2>
-    <p>La contraseña debe tener al menos 6 caracteres. Por favor, elige una contraseña más segura.</p>
+    <h2 id="short-password-modal-title">Contrasena demasiado corta!</h2>
+    <p>La contrasena debe tener al menos 6 caracteres. Por favor, elige una contrasena mas segura.</p>
     <button id="short-password-modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
 
-<!-- Modal de limite de emails -->
 <div id="rate-limit-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="rate-limit-modal-title">
     <div class="modal-icon">
@@ -192,13 +191,11 @@ const {
         <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
       </svg>
     </div>
-    <h2 id="rate-limit-modal-title">¡Demasiados intentos!</h2>
-    <p>Has superado el límite de envíos de email. Espera unos minutos antes de intentarlo de nuevo.</p>
+    <h2 id="rate-limit-modal-title">Demasiados intentos!</h2>
+    <p>Has superado el limite de envios de email. Espera unos minutos antes de intentarlo de nuevo.</p>
     <button id="rate-limit-modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
-
-
 
 <script>
   const form = document.getElementById("auth-form") as HTMLFormElement | null;
@@ -233,7 +230,6 @@ const {
     rateLimitModal?.setAttribute("aria-hidden", "true");
   });
 
-
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!form || !message) return;
@@ -264,7 +260,7 @@ const {
         return;
       }
 
-      message.textContent = "¡Bienvenido!";
+      message.textContent = "Bienvenido!";
       setTimeout(() => { window.location.href = "/dashboard"; }, 800);
 
     } else {
@@ -310,7 +306,21 @@ const {
 
       message.textContent = "Cuenta creada correctamente";
       form.reset();
-      setTimeout(() => { window.location.href = "/login"; }, 800);
+
+      const modal = document.getElementById("email-modal");
+      const modalEmail = document.getElementById("modal-email");
+      if (modal && modalEmail) {
+        modalEmail.textContent = email;
+        modal.setAttribute("aria-hidden", "false");
+        modal.classList.add("modal-visible");
+      }
+
+      document.getElementById("modal-close")?.addEventListener("click", () => {
+        const modal = document.getElementById("email-modal");
+        modal?.classList.remove("modal-visible");
+        modal?.setAttribute("aria-hidden", "true");
+        setTimeout(() => { window.location.href = "/login"; }, 300);
+      });
     }
   });
 </script>
@@ -325,12 +335,7 @@ const {
     align-items: center;
     justify-content: center;
   }
-
-  .modal-overlay.modal-visible {
-    display: flex;
-    animation: fadeIn 0.25s ease;
-  }
-
+  .modal-overlay.modal-visible { display: flex; animation: fadeIn 0.25s ease; }
   .modal-box {
     background: #1e1e1e;
     border: 1px solid #333;
@@ -346,27 +351,10 @@ const {
     gap: 1em;
     animation: slideUp 0.3s ease;
   }
-
-  .modal-icon {
-    color: #5264AE;
-  }
-
-  .modal-box h2 {
-    font-size: 1.3em;
-    margin: 0;
-  }
-
-  .modal-box p {
-    color: #aaa;
-    font-size: 0.95em;
-    margin: 0;
-    line-height: 1.5;
-  }
-
-  .modal-box strong {
-    color: white;
-  }
-
+  .modal-icon { color: #5264AE; }
+  .modal-box h2 { font-size: 1.3em; margin: 0; }
+  .modal-box p { color: #aaa; font-size: 0.95em; margin: 0; line-height: 1.5; }
+  .modal-box strong { color: white; }
   .modal-btn {
     margin-top: 0.5em;
     padding: 0.6em 2em;
@@ -378,18 +366,7 @@ const {
     cursor: pointer;
     transition: background 0.3s ease;
   }
-
-  .modal-btn:hover {
-    background: #3a4a8a;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes slideUp {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
+  .modal-btn:hover { background: #3a4a8a; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 </style>

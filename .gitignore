@@ -21,6 +21,9 @@ pnpm-debug.log*
 .DS_Store
 
 # jetbrains setting folder
+<<<<<<< HEAD
+.idea/
+=======
 .idea/
 
 documentacion/.env.local
@@ -39,3 +42,4 @@ documentacion/.env.local
 .env.local
 .env.*
 documentacion/.env.local
+>>>>>>> cdf4c6f771d2696583d42823c1c1cdea0a0fb01c

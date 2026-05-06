@@ -14,12 +14,12 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       );
     }
 
-    const { data, error } = await supabase.auth.signUp({ 
-      email, 
+    const { data, error } = await supabase.auth.signUp({
+      email,
       password,
       options: {
-        emailRedirectTo: 'http://localhost:4322/login'
-      }
+        emailRedirectTo: `${new URL(request.url).origin}/login`,
+      },
     });
 
     if (error) {
@@ -29,13 +29,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       );
     }
 
-    // Si email confirmation está activo, data.user existe pero data.session es null
-    // Igualmente guardamos el perfil si tenemos el user id
     if (data.user) {
       await supabase
         .from("Users")
         .insert([{ id: data.user.id, username }]);
-      // No bloqueamos el registro si falla la inserción del perfil
     }
 
     const needsConfirmation = !data.session;

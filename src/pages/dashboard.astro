@@ -35,17 +35,17 @@ if (!user) {
             <button
               id="btnBackup"
               type="button"
-              class="text-[10px] font-white uppercase tracking-widest text-muted hover:text-blue transition-colors flex items-center gap-2"
+              class="text-[10px] font-black uppercase tracking-widest text-muted hover:text-blue transition-colors flex items-center gap-2"
             >
-              📥 Backup
+              Backup
             </button>
 
             <button
               id="btnRestore"
               type="button"
-              class="text-[10px] font-white uppercase tracking-widest text-muted hover:text-teal transition-colors flex items-center gap-2"
+              class="text-[10px] font-black uppercase tracking-widest text-muted hover:text-teal transition-colors flex items-center gap-2"
             >
-              📤 Restaurar
+              Restaurar
             </button>
 
             <input type="file" id="importInput" class="hidden" accept=".json" />
@@ -55,7 +55,7 @@ if (!user) {
         <button
           id="btnNuevaCarpeta"
           type="button"
-          class="px-10 py-5 bg-blue hover:bg-blue/90 text-white font-white rounded-3xl transition-all shadow-xl shadow-blue/20 active:scale-95 uppercase tracking-widest text-xs cursor-pointer"
+          class="px-10 py-5 bg-blue hover:bg-blue/90 text-white font-black rounded-3xl transition-all shadow-xl shadow-blue/20 active:scale-95 uppercase tracking-widest text-xs cursor-pointer"
         >
           + Nueva Carpeta
         </button>
@@ -82,7 +82,7 @@ if (!user) {
         <input
           type="text"
           id="globalSearch"
-          placeholder="¿Qué link estás buscando hoy?"
+          placeholder="Que link estas buscando hoy?"
           class="w-full bg-surface border-2 border-border text-white p-6 pl-16 rounded-[2.5rem] focus:border-blue outline-none transition-all shadow-2xl"
         />
       </div>
@@ -102,7 +102,7 @@ if (!user) {
   let carpetas = [];
   const LIMIT_FOLDERS_FREE = 2;
 
-  function swalError(text = "Ocurrió un error") {
+  function swalError(text = "Ocurrio un error") {
     return Swal.fire({
       title: "Error",
       text,
@@ -192,14 +192,14 @@ if (!user) {
                 title="Eliminar carpeta"
                 class="hover:scale-110 transition-transform"
               >
-                🗑
+                X
               </button>
             </div>
 
             <div class="space-y-2 mb-6 flex-1">
               ${
                 links.length === 0
-                  ? `<p class="text-[10px] text-muted uppercase tracking-widest text-center py-4">Sin links aún</p>`
+                  ? `<p class="text-[10px] text-muted uppercase tracking-widest text-center py-4">Sin links aun</p>`
                   : links
                       .map(
                         (link, li) => `
@@ -219,7 +219,7 @@ if (!user) {
                               data-link="${li}"
                               class="ml-2 text-muted hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
                             >
-                              ✕
+                              x
                             </button>
                           </div>
                         `
@@ -234,7 +234,7 @@ if (!user) {
               data-index="${index}"
               class="w-full py-3 bg-blue/10 text-blue rounded-xl font-black text-[9px] uppercase tracking-tighter hover:bg-blue hover:text-black transition-all"
             >
-              + Añadir Enlace
+              + Anadir Enlace
             </button>
           </div>
         `;
@@ -245,8 +245,8 @@ if (!user) {
   async function createFolder() {
     if (carpetas.length >= LIMIT_FOLDERS_FREE) {
       await Swal.fire({
-        title: "Límite Alcanzado",
-        text: "El plan gratuito permite un máximo de 2 carpetas. ¡Actualiza a PRO para más!",
+        title: "Limite Alcanzado",
+        text: "El plan gratuito permite un maximo de 2 carpetas.",
         icon: "warning",
         confirmButtonColor: "#38BDF8",
         background: "#18181b",
@@ -258,7 +258,7 @@ if (!user) {
     const { value: nombre } = await Swal.fire({
       title: "Nueva Carpeta",
       input: "text",
-      inputLabel: "Nombre de la colección",
+      inputLabel: "Nombre de la coleccion",
       inputPlaceholder: "Ej: Mis Links Favoritos",
       showCancelButton: true,
       confirmButtonText: "Crear",
@@ -269,7 +269,7 @@ if (!user) {
       color: "#fff",
       inputValidator: (value) => {
         if (!value?.trim()) return "El nombre es obligatorio";
-        if (value.trim().length > 50) return "Máximo 50 caracteres";
+        if (value.trim().length > 50) return "Maximo 50 caracteres";
       },
     });
 
@@ -296,8 +296,8 @@ if (!user) {
     renderCarpetas();
 
     await Swal.fire({
-      title: "¡Creada!",
-      text: "Tu nueva carpeta está lista",
+      title: "Creada!",
+      text: "Tu nueva carpeta esta lista",
       icon: "success",
       confirmButtonColor: "#38BDF8",
       background: "#18181b",
@@ -314,12 +314,12 @@ if (!user) {
     }
 
     const { value: formValues } = await Swal.fire({
-      title: "Añadir Enlace",
+      title: "Anadir Enlace",
       html: `
         <input id="swal-url" class="swal2-input" placeholder="https://ejemplo.com" type="url">
         <input id="swal-tag" class="swal2-input" placeholder="Nombre o etiqueta (opcional)">
       `,
-      confirmButtonText: "Añadir",
+      confirmButtonText: "Anadir",
       cancelButtonText: "Cancelar",
       showCancelButton: true,
       confirmButtonColor: "#38BDF8",
@@ -338,7 +338,7 @@ if (!user) {
         try {
           new URL(url);
         } catch {
-          Swal.showValidationMessage("URL inválida");
+          Swal.showValidationMessage("URL invalida");
           return false;
         }
 
@@ -376,10 +376,10 @@ if (!user) {
     }
 
     const result = await Swal.fire({
-      title: "¿Eliminar link?",
+      title: "Eliminar link?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
+      confirmButtonText: "Si, eliminar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#ef4444",
       cancelButtonColor: "#6b7280",
@@ -410,11 +410,11 @@ if (!user) {
     }
 
     const result = await Swal.fire({
-      title: "¿Eliminar carpeta?",
-      text: "Se borrarán todos los links dentro de ella.",
+      title: "Eliminar carpeta?",
+      text: "Se borraran todos los links dentro de ella.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
+      confirmButtonText: "Si, eliminar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#ef4444",
       cancelButtonColor: "#6b7280",
@@ -482,7 +482,7 @@ if (!user) {
       const imported = JSON.parse(await file.text());
 
       if (!Array.isArray(imported)) {
-        throw new Error("Formato inválido");
+        throw new Error("Formato invalido");
       }
 
       const sanitized = imported.map((folder) => ({
@@ -510,7 +510,7 @@ if (!user) {
       renderCarpetas();
 
       await Swal.fire({
-        title: "¡Restaurado!",
+        title: "Restaurado!",
         icon: "success",
         confirmButtonColor: "#38BDF8",
         background: "#18181b",
@@ -519,7 +519,7 @@ if (!user) {
         showConfirmButton: false,
       });
     } catch (error) {
-      await swalError(error.message || "Archivo inválido o formato incorrecto");
+      await swalError(error.message || "Archivo invalido o formato incorrecto");
     } finally {
       event.target.value = "";
     }
