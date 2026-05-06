@@ -14,7 +14,17 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       );
     }
 
+<<<<<<< HEAD
     const { data, error } = await supabase.auth.signUp({ email, password });
+=======
+    const { data, error } = await supabase.auth.signUp({ 
+      email, 
+      password,
+      options: {
+        emailRedirectTo: 'http://localhost:4322/login'
+      }
+    });
+>>>>>>> cdf4c6f771d2696583d42823c1c1cdea0a0fb01c
 
     if (error) {
       return new Response(

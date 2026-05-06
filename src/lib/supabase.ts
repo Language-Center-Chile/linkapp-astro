@@ -29,6 +29,7 @@ export function createClient({
       },
     }
   );
+<<<<<<< HEAD
 }
 // Al final de src/lib/supabase.ts
 import { createClient as createBrowserClient } from "@supabase/supabase-js";
@@ -37,3 +38,6 @@ export const supabaseBrowser = createBrowserClient(
   import.meta.env.PUBLIC_SUPABASE_URL,
   import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY
 );
+=======
+}
+>>>>>>> cdf4c6f771d2696583d42823c1c1cdea0a0fb01c

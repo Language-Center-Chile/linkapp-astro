@@ -1,4 +1,8 @@
 ---
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> cdf4c6f771d2696583d42823c1c1cdea0a0fb01c
 interface Props {
   textoBoton: string;
   class?: string;
@@ -18,4 +22,19 @@ const {
 {href
   ? <a href={href} class={className} {...props}>{textoBoton}</a>
   : <button class={className} type={type} {...props}>{textoBoton}</button>
+<<<<<<< HEAD
 }
+=======
+}
+=======
+
+interface Props {
+  "texto-boton": string;
+  class?: string;
+}
+
+const { "texto-boton": textoBoton, class: className = "button1" } = Astro.props;
+---
+<button class={className}>{textoBoton}</button>
+>>>>>>> 291e8be88fc8c9084ff86c00e59c808ef028634a
+>>>>>>> cdf4c6f771d2696583d42823c1c1cdea0a0fb01c
