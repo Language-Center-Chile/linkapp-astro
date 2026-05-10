@@ -1,552 +1,321 @@
 ---
 import DashboardLayouts from "../layouts/dashboardLayouts.astro";
 import { createClient } from "@/lib/supabase";
+import faviconImg from "../assets/favicon.png";
 
 const supabase = createClient({
   request: Astro.request,
   cookies: Astro.cookies,
 });
 
-const {
-  data: { user },
-} = await supabase.auth.getUser();
+const { data: { user } } = await supabase.auth.getUser();
 
 if (!user) {
   return Astro.redirect("/login");
 }
+
+const { data: profile } = await supabase
+  .from('profiles')
+  .select('nickname, avatar_url, plan')
+  .eq('id', user.id)
+  .single();
+
+const plan = profile?.plan || "free";
+const isPro = plan === "pro";
+const nickname = profile?.nickname || "Usuario";
+const userAvatar = isPro ? (profile?.avatar_url || "") : "";
+const userInitials = nickname[0].toUpperCase();
 ---
 
 <DashboardLayouts
   title="Dashboard - LinkApp"
   description="Gestiona tus colecciones de enlaces con estilo."
 >
-  <section class="dashboard-content min-h-[80vh] py-12 px-6">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-8">
-        <div class="text-center md:text-left">
-          <h1 class="text-5xl font-black tracking-tighter text-white mb-4">
-            Mis <span class="gradient-text">Colecciones</span>
-          </h1>
-          <p class="text-white text-lg font-medium max-w-xl">
-            Gestiona tus links con estilo PRO.
-          </p>
+  <main id="dashboardMain" data-plan={plan} data-is-pro={isPro.toString()}>
+    <header class="w-full border-b border-white/5 bg-[#0a0a0a] sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img src={faviconImg.src} alt="Logo LinkApp" class="w-10 h-10 object-contain" />
+          <span class="font-bold text-xl tracking-tighter text-white">LinkApp</span>
+          {isPro && <span class="bg-white/10 text-white text-[8px] font-black px-2 py-1 rounded-full uppercase tracking-widest border border-white/20">Pro</span>}
+        </div>
 
-          <div class="flex justify-center md:justify-start gap-4 mt-6">
-            <button
-              id="btnBackup"
-              type="button"
-              class="text-[10px] font-black uppercase tracking-widest text-muted hover:text-blue transition-colors flex items-center gap-2"
-            >
-              Backup
+        <div class="flex items-center gap-6 relative">
+          <div class="hidden md:flex flex-col items-end">
+            <span class="text-[10px] font-black uppercase tracking-widest text-muted">Bienvenido</span>
+            <span id="headerNickname" class="text-sm font-bold text-white">{nickname}</span>
+          </div>
+          
+          <button id="profileBtn" class="w-10 h-10 rounded-full border border-white/10 overflow-hidden hover:scale-105 transition-transform bg-[#18181b] cursor-pointer">
+            {userAvatar ? (
+              <img src={userAvatar} alt="Perfil" class="w-full h-full object-cover" />
+            ) : (
+              <div class="w-full h-full bg-blue/10 flex items-center justify-center text-blue font-black text-xs">
+                {userInitials}
+              </div>
+            )}
+          </button>
+
+          <div id="profileMenu" class="absolute right-0 top-14 w-48 bg-[#18181b] border border-white/10 rounded-2xl shadow-2xl py-2 hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[60]">
+            <a href="/" id="goHome" class="w-full px-4 py-3 text-left text-xs font-bold text-white hover:bg-white/5 transition-colors flex items-center gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              Ir al Inicio
+            </a>
+
+            {isPro ? (
+              <a href="/settings" class="w-full px-4 py-3 text-left text-xs font-bold text-white hover:bg-white/5 transition-colors flex items-center gap-3 border-t border-white/5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                Configuración
+              </a>
+            ) : (
+              <div class="w-full px-4 py-3 text-left text-xs font-bold text-white/20 flex items-center gap-3 border-t border-white/5 cursor-not-allowed">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Ajustes (Solo PRO)
+              </div>
+            )}
+            
+            <div class="h-[1px] bg-white/5 my-1"></div>
+            
+            <button id="logoutBtn" class="w-full px-4 py-3 text-left text-xs font-bold text-red-400 hover:bg-red-400/10 transition-colors flex items-center gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+              Cerrar Sesión
             </button>
-
-            <button
-              id="btnRestore"
-              type="button"
-              class="text-[10px] font-black uppercase tracking-widest text-muted hover:text-teal transition-colors flex items-center gap-2"
-            >
-              Restaurar
-            </button>
-
-            <input type="file" id="importInput" class="hidden" accept=".json" />
           </div>
         </div>
-
-        <button
-          id="btnNuevaCarpeta"
-          type="button"
-          class="px-10 py-5 bg-blue hover:bg-blue/90 text-white font-black rounded-3xl transition-all shadow-xl shadow-blue/20 active:scale-95 uppercase tracking-widest text-xs cursor-pointer"
-        >
-          + Nueva Carpeta
-        </button>
       </div>
+    </header>
 
-      <div class="relative mb-12 max-w-2xl mx-auto">
-        <div class="absolute left-6 top-1/2 -translate-y-1/2 text-blue">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="3"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" x2="16.65" y1="21" y2="16.65"></line>
-          </svg>
+    <section class="dashboard-content min-h-[80vh] py-12 px-6">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-8">
+          <div class="text-center md:text-left">
+            <h1 class="text-5xl font-bold tracking-tighter text-white mb-4">
+              Mis <span class="gradient-text">Colecciones</span>
+            </h1>
+            <p class="text-white text-lg font-medium max-w-xl">
+              Plan actual: <span class={isPro ? "text-blue uppercase" : "text-muted uppercase"}>{plan}</span>
+            </p>
+
+            <div class="flex justify-center md:justify-start gap-4 mt-6">
+              <button id="btnBackup" type="button" class="text-[10px] font-black uppercase tracking-widest text-muted hover:text-blue transition-colors flex items-center gap-2">Backup</button>
+              <button id="btnRestore" type="button" class="text-[10px] font-black uppercase tracking-widest text-muted hover:text-teal transition-colors flex items-center gap-2">Restaurar</button>
+              <input type="file" id="importInput" class="hidden" accept=".json" />
+            </div>
+          </div>
+
+          <button id="btnNuevaCarpeta" type="button" class="px-10 py-5 bg-[#1e1e21] border border-white/10 hover:bg-blue hover:text-black text-white font-black rounded-3xl transition-all shadow-xl active:scale-95 uppercase tracking-widest text-xs cursor-pointer">+ Nueva Carpeta</button>
         </div>
 
-        <input
-          type="text"
-          id="globalSearch"
-          placeholder="Que link estas buscando hoy?"
-          class="w-full bg-surface border-2 border-border text-white p-6 pl-16 rounded-[2.5rem] focus:border-blue outline-none transition-all shadow-2xl"
-        />
+        <div class="relative mb-12 max-w-2xl mx-auto">
+          <div class="absolute left-6 top-1/2 -translate-y-1/2 text-blue">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+          </div>
+          <input type="text" id="globalSearch" placeholder="Que link estas buscando hoy?" class="w-full bg-[#18181b] border-2 border-white/5 text-white p-6 pl-16 rounded-[2.5rem] focus:border-blue outline-none transition-all shadow-2xl" />
+        </div>
+
+        <div id="folderGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
       </div>
 
-      <div
-        id="folderGrid"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-      ></div>
-    </div>
-  </section>
+      <div id="shareOverlay" class="share-overlay hidden">
+        <div class="share-box relative animate-in fade-in zoom-in duration-200">
+          <button id="closeShare" class="absolute top-6 right-8 text-muted hover:text-white transition-colors text-2xl font-black">✕</button>
+          <h3 class="text-2xl font-black text-white uppercase tracking-tighter mb-8 text-center">Compartir Colección</h3>
+          <div id="qrContainer" class="bg-white p-4 rounded-[2.5rem] w-48 h-48 mx-auto flex items-center justify-center shadow-2xl shadow-blue/20 mb-8">
+            <div id="qrCode"></div>
+          </div>
+          <div class="space-y-3 mb-8">
+            <p class="text-[10px] font-black uppercase tracking-widest text-muted">Enlace de acceso</p>
+            <div class="flex gap-2">
+              <input type="text" id="shareUrl" readonly class="w-full bg-black/40 border border-white/10 text-white p-4 rounded-xl text-xs outline-none focus:border-blue/50" />
+              <button id="copyUrl" class="bg-blue text-white px-6 rounded-xl font-black text-[10px] uppercase hover:bg-blue/80 transition-all">Copiar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 </DashboardLayouts>
 
 <script>
   // @ts-nocheck
   import Swal from "sweetalert2";
+  import { supabaseBrowser } from "../lib/supabase"; 
+
+  const main = document.getElementById('dashboardMain');
+  const isPro = main?.dataset.isPro === 'true';
+  const LIMIT_FOLDERS = isPro ? 1000 : 2;
+  const LIMIT_LINKS = isPro ? 10000 : 2;
 
   let carpetas = [];
-  const LIMIT_FOLDERS_FREE = 2;
+  let userId = null;
 
-  function swalError(text = "Ocurrio un error") {
-    return Swal.fire({
-      title: "Error",
-      text,
-      icon: "error",
-      confirmButtonColor: "#38BDF8",
-      background: "#18181b",
-      color: "#fff",
-    });
-  }
+  const swalConfig = {
+    confirmButtonColor: "#38BDF8",
+    cancelButtonColor: "#6b7280",
+    background: "#18181b",
+    color: "#fff",
+  };
 
-  function escapeHtml(value = "") {
-    return String(value)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
+  // Header logic
+  const profileBtn = document.getElementById('profileBtn');
+  const profileMenu = document.getElementById('profileMenu');
+  
+  profileBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    profileMenu?.classList.toggle('hidden');
+  });
 
-  function escapeAttribute(value = "") {
-    return escapeHtml(value);
+  document.addEventListener('click', () => {
+    profileMenu?.classList.add('hidden');
+  });
+
+  document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+    await supabaseBrowser.auth.signOut();
+    window.location.href = "/login";
+  });
+
+  function escapeHtml(str) {
+    if (!str) return "";
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
   }
 
   async function cargarDatos() {
-    const res = await fetch("/api/folders");
-    const json = await res.json();
+    const { data: { user } } = await supabaseBrowser.auth.getUser();
+    if (!user) return;
+    userId = user.id;
 
-    if (!res.ok) {
-      throw new Error(json?.error || "No se pudieron cargar tus carpetas");
+    const { data, error } = await supabaseBrowser
+      .from('linkapp_folders')
+      .select('content')
+      .eq('user_id', userId);
+
+    if (!error) {
+      carpetas = data && data.length > 0 ? data[0].content : [];
+      renderCarpetas();
     }
-
-    carpetas = Array.isArray(json.content) ? json.content : [];
-    renderCarpetas();
   }
 
-  async function guardarCarpetas(nuevasCarpetas) {
-    const res = await fetch("/api/folders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ content: nuevasCarpetas }),
-    });
+  async function actualizarDB(nuevasCarpetas) {
+    if (!userId) return false;
+    const { error } = await supabaseBrowser
+      .from('linkapp_folders')
+      .upsert({ 
+        user_id: userId, 
+        content: nuevasCarpetas,
+        updated_at: new Date().toISOString() 
+      }, { onConflict: 'user_id' });
 
-    const json = await res.json();
-
-    if (!res.ok) {
-      return { message: json?.error || "No se pudo guardar" };
+    if (error) {
+      Swal.fire({ ...swalConfig, title: "Error", text: error.message, icon: "error" });
+      return false;
     }
-
-    return null;
-  }
-
-  async function init() {
-    try {
-      await cargarDatos();
-    } catch (error) {
-      await swalError(error?.message || "No se pudieron cargar tus carpetas");
-    }
+    carpetas = nuevasCarpetas;
+    return true;
   }
 
   function renderCarpetas(lista = carpetas) {
     const grid = document.getElementById("folderGrid");
     if (!grid) return;
+    grid.innerHTML = "";
 
-    if (!Array.isArray(lista) || lista.length === 0) {
-      grid.innerHTML = `
-        <div class="col-span-full text-center py-20 opacity-50 font-black uppercase text-xs tracking-widest text-white">
-          No hay colecciones creadas
+    if (!lista || lista.length === 0) {
+      grid.innerHTML = `<div class="col-span-full text-center py-20 opacity-50 text-white font-black uppercase text-xs tracking-widest">No hay colecciones creadas</div>`;
+      return;
+    }
+
+    grid.innerHTML = lista.map((folder, index) => {
+      const isBlocked = !isPro && index >= LIMIT_FOLDERS;
+      const links = Array.isArray(folder.links) ? folder.links : [];
+      
+      return `
+        <div class="folder-card border border-white/5 rounded-[2.5rem] p-8 flex flex-col h-full bg-[#18181b] animate-fade-in shadow-xl relative overflow-hidden">
+          
+          ${isBlocked ? `
+            <div class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span class="text-[10px] font-black text-white uppercase tracking-widest">Bloqueado (Solo PRO)</span>
+            </div>
+          ` : ''}
+
+          <div class="flex justify-between items-start mb-6 gap-4">
+            <h3 class="text-xl font-black text-white truncate">${escapeHtml(folder.nombre)}</h3>
+            <div class="flex gap-2">
+              <button data-action="compartir-carpeta" data-index="${index}" class="text-muted hover:text-blue transition-transform hover:scale-125 cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+              </button>
+              <button data-action="eliminar-carpeta" data-index="${index}" class="text-muted hover:text-red-400 transition-transform hover:scale-125 cursor-pointer">✕</button>
+            </div>
+          </div>
+          <div class="space-y-2 mb-6 flex-1">
+            ${links.length === 0 
+              ? '<p class="text-[10px] text-muted uppercase tracking-widest text-center py-4">Sin links aún</p>'
+              : links.map((link, li) => `
+                <div class="flex items-center justify-between bg-white/[0.03] p-3 rounded-xl border border-transparent hover:border-blue/20 transition-all group gap-2">
+                  <a href="${link.url}" target="_blank" class="text-xs font-bold text-white hover:text-blue truncate flex-1">${escapeHtml(link.tag || link.url)}</a>
+                  <button data-action="eliminar-link" data-folder="${index}" data-link="${li}" class="text-muted hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity text-xs px-2 cursor-pointer">✕</button>
+                </div>
+              `).join('')
+            }
+          </div>
+          <button data-action="agregar-link" data-index="${index}" class="w-full py-3 bg-blue/10 text-blue rounded-xl font-black text-[9px] uppercase tracking-tighter hover:bg-blue hover:text-black transition-all cursor-pointer">+ Añadir Enlace</button>
         </div>
       `;
-      return;
-    }
-
-    grid.innerHTML = lista
-      .map((folder, index) => {
-        const links = Array.isArray(folder.links) ? folder.links : [];
-
-        return `
-          <div class="folder-card border border-border rounded-[2.5rem] p-8 flex flex-col h-full bg-surface/60 backdrop-blur-md">
-            <div class="flex justify-between items-start mb-6 gap-4">
-              <h3 class="text-xl font-black text-white truncate">${escapeHtml(folder.nombre ?? "Sin nombre")}</h3>
-              <button
-                type="button"
-                data-action="eliminar-carpeta"
-                data-index="${index}"
-                title="Eliminar carpeta"
-                class="hover:scale-110 transition-transform"
-              >
-                X
-              </button>
-            </div>
-
-            <div class="space-y-2 mb-6 flex-1">
-              ${
-                links.length === 0
-                  ? `<p class="text-[10px] text-muted uppercase tracking-widest text-center py-4">Sin links aun</p>`
-                  : links
-                      .map(
-                        (link, li) => `
-                          <div class="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-transparent hover:border-blue/20 transition-all group gap-2">
-                            <a
-                              href="${escapeAttribute(link.url ?? "#")}"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              class="text-xs font-bold text-white hover:text-blue truncate flex-1"
-                            >
-                              ${escapeHtml(link.tag || link.url || "Sin URL")}
-                            </a>
-                            <button
-                              type="button"
-                              data-action="eliminar-link"
-                              data-folder="${index}"
-                              data-link="${li}"
-                              class="ml-2 text-muted hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
-                            >
-                              x
-                            </button>
-                          </div>
-                        `
-                      )
-                      .join("")
-              }
-            </div>
-
-            <button
-              type="button"
-              data-action="agregar-link"
-              data-index="${index}"
-              class="w-full py-3 bg-blue/10 text-blue rounded-xl font-black text-[9px] uppercase tracking-tighter hover:bg-blue hover:text-black transition-all"
-            >
-              + Anadir Enlace
-            </button>
-          </div>
-        `;
-      })
-      .join("");
+    }).join('');
   }
 
-  async function createFolder() {
-    if (carpetas.length >= LIMIT_FOLDERS_FREE) {
-      await Swal.fire({
-        title: "Limite Alcanzado",
-        text: "El plan gratuito permite un maximo de 2 carpetas.",
-        icon: "warning",
-        confirmButtonColor: "#38BDF8",
-        background: "#18181b",
-        color: "#fff",
-      });
-      return;
+  document.getElementById("btnNuevaCarpeta")?.addEventListener("click", async () => {
+    if (carpetas.length >= LIMIT_FOLDERS) {
+      return Swal.fire({ title: "Límite alcanzado", text: isPro ? "Límite de 1000 alcanzado." : "El plan FREE solo permite 2 carpetas.", icon: "warning", ...swalConfig });
     }
-
-    const { value: nombre } = await Swal.fire({
-      title: "Nueva Carpeta",
-      input: "text",
-      inputLabel: "Nombre de la coleccion",
-      inputPlaceholder: "Ej: Mis Links Favoritos",
-      showCancelButton: true,
-      confirmButtonText: "Crear",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#38BDF8",
-      cancelButtonColor: "#6b7280",
-      background: "#18181b",
-      color: "#fff",
-      inputValidator: (value) => {
-        if (!value?.trim()) return "El nombre es obligatorio";
-        if (value.trim().length > 50) return "Maximo 50 caracteres";
-      },
-    });
-
-    if (!nombre?.trim()) return;
-
-    const updatedFolders = [
-      ...carpetas,
-      {
-        id: crypto.randomUUID(),
-        nombre: nombre.trim(),
-        links: [],
-        created_at: new Date().toISOString(),
-      },
-    ];
-
-    const error = await guardarCarpetas(updatedFolders);
-
-    if (error) {
-      await swalError(error.message || "No se pudo crear la carpeta");
-      return;
+    const { value: nombre } = await Swal.fire({ title: "Nueva Carpeta", input: "text", ...swalConfig, showCancelButton: true });
+    if (nombre) {
+      const nueva = [...carpetas, { id: crypto.randomUUID(), nombre: nombre.trim(), links: [], created_at: new Date().toISOString() }];
+      if (await actualizarDB(nueva)) renderCarpetas();
     }
-
-    carpetas = updatedFolders;
-    renderCarpetas();
-
-    await Swal.fire({
-      title: "Creada!",
-      text: "Tu nueva carpeta esta lista",
-      icon: "success",
-      confirmButtonColor: "#38BDF8",
-      background: "#18181b",
-      color: "#fff",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-  }
-
-  async function agregarLink(index) {
-    if (!carpetas[index]) {
-      await swalError("La carpeta no existe");
-      return;
-    }
-
-    const { value: formValues } = await Swal.fire({
-      title: "Anadir Enlace",
-      html: `
-        <input id="swal-url" class="swal2-input" placeholder="https://ejemplo.com" type="url">
-        <input id="swal-tag" class="swal2-input" placeholder="Nombre o etiqueta (opcional)">
-      `,
-      confirmButtonText: "Anadir",
-      cancelButtonText: "Cancelar",
-      showCancelButton: true,
-      confirmButtonColor: "#38BDF8",
-      cancelButtonColor: "#6b7280",
-      background: "#18181b",
-      color: "#fff",
-      preConfirm: () => {
-        const url = document.getElementById("swal-url")?.value?.trim();
-        const tag = document.getElementById("swal-tag")?.value?.trim();
-
-        if (!url) {
-          Swal.showValidationMessage("La URL es obligatoria");
-          return false;
-        }
-
-        try {
-          new URL(url);
-        } catch {
-          Swal.showValidationMessage("URL invalida");
-          return false;
-        }
-
-        return { url, tag };
-      },
-    });
-
-    if (!formValues) return;
-
-    const updatedFolders = structuredClone(carpetas);
-    if (!Array.isArray(updatedFolders[index].links)) {
-      updatedFolders[index].links = [];
-    }
-
-    updatedFolders[index].links.push({
-      url: formValues.url,
-      tag: formValues.tag || "",
-    });
-
-    const error = await guardarCarpetas(updatedFolders);
-
-    if (error) {
-      await swalError(error.message || "No se pudo guardar el link");
-      return;
-    }
-
-    carpetas = updatedFolders;
-    renderCarpetas();
-  }
-
-  async function eliminarLink(folderIndex, linkIndex) {
-    if (!carpetas[folderIndex]?.links?.[linkIndex]) {
-      await swalError("El link no existe");
-      return;
-    }
-
-    const result = await Swal.fire({
-      title: "Eliminar link?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Si, eliminar",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#ef4444",
-      cancelButtonColor: "#6b7280",
-      background: "#18181b",
-      color: "#fff",
-    });
-
-    if (!result.isConfirmed) return;
-
-    const updatedFolders = structuredClone(carpetas);
-    updatedFolders[folderIndex].links.splice(linkIndex, 1);
-
-    const error = await guardarCarpetas(updatedFolders);
-
-    if (error) {
-      await swalError(error.message || "No se pudo eliminar el link");
-      return;
-    }
-
-    carpetas = updatedFolders;
-    renderCarpetas();
-  }
-
-  async function eliminarCarpeta(index) {
-    if (!carpetas[index]) {
-      await swalError("La carpeta no existe");
-      return;
-    }
-
-    const result = await Swal.fire({
-      title: "Eliminar carpeta?",
-      text: "Se borraran todos los links dentro de ella.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Si, eliminar",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#ef4444",
-      cancelButtonColor: "#6b7280",
-      background: "#18181b",
-      color: "#fff",
-    });
-
-    if (!result.isConfirmed) return;
-
-    const updatedFolders = carpetas.filter((_, i) => i !== index);
-    const error = await guardarCarpetas(updatedFolders);
-
-    if (error) {
-      await swalError(error.message || "No se pudo eliminar la carpeta");
-      return;
-    }
-
-    carpetas = updatedFolders;
-    renderCarpetas();
-  }
-
-  function handleSearch(event) {
-    const query = event.target.value.toLowerCase().trim();
-
-    if (!query) {
-      renderCarpetas();
-      return;
-    }
-
-    const filtradas = carpetas
-      .map((folder) => ({
-        ...folder,
-        links: (Array.isArray(folder.links) ? folder.links : []).filter((l) => {
-          const url = l.url?.toLowerCase?.() || "";
-          const tag = l.tag?.toLowerCase?.() || "";
-          return url.includes(query) || tag.includes(query);
-        }),
-      }))
-      .filter((folder) => {
-        const nombre = folder.nombre?.toLowerCase?.() || "";
-        return nombre.includes(query) || folder.links.length > 0;
-      });
-
-    renderCarpetas(filtradas);
-  }
-
-  function handleBackup() {
-    const blob = new Blob([JSON.stringify(carpetas, null, 2)], {
-      type: "application/json",
-    });
-
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `linkapp-backup-${Date.now()}.json`;
-    a.click();
-
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  }
-
-  async function handleRestoreChange(event) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const imported = JSON.parse(await file.text());
-
-      if (!Array.isArray(imported)) {
-        throw new Error("Formato invalido");
-      }
-
-      const sanitized = imported.map((folder) => ({
-        id: folder.id || crypto.randomUUID(),
-        nombre: String(folder.nombre || "Sin nombre").trim(),
-        links: Array.isArray(folder.links)
-          ? folder.links
-              .filter((link) => link?.url)
-              .map((link) => ({
-                url: String(link.url).trim(),
-                tag: String(link.tag || "").trim(),
-              }))
-          : [],
-        created_at: folder.created_at || new Date().toISOString(),
-      }));
-
-      const error = await guardarCarpetas(sanitized);
-
-      if (error) {
-        await swalError(error.message || "No se pudo restaurar el backup");
-        return;
-      }
-
-      carpetas = sanitized;
-      renderCarpetas();
-
-      await Swal.fire({
-        title: "Restaurado!",
-        icon: "success",
-        confirmButtonColor: "#38BDF8",
-        background: "#18181b",
-        color: "#fff",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-    } catch (error) {
-      await swalError(error.message || "Archivo invalido o formato incorrecto");
-    } finally {
-      event.target.value = "";
-    }
-  }
-
-  document.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-action]");
-    if (!btn) return;
-
-    const action = btn.dataset.action;
-
-    if (action === "agregar-link") agregarLink(Number(btn.dataset.index));
-    if (action === "eliminar-carpeta") eliminarCarpeta(Number(btn.dataset.index));
-    if (action === "eliminar-link") eliminarLink(Number(btn.dataset.folder), Number(btn.dataset.link));
   });
 
-  (async () => {
-    await init();
+  document.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-action]");
+    if (!btn) return;
+    const action = btn.dataset.action;
+    const index = Number(btn.dataset.index);
 
-    document.getElementById("btnNuevaCarpeta")?.addEventListener("click", createFolder);
-    document.getElementById("globalSearch")?.addEventListener("input", handleSearch);
-    document.getElementById("btnBackup")?.addEventListener("click", handleBackup);
-    document.getElementById("btnRestore")?.addEventListener("click", () => {
-      document.getElementById("importInput")?.click();
-    });
-    document.getElementById("importInput")?.addEventListener("change", handleRestoreChange);
-  })();
+    if (action === "agregar-link") {
+      if (!isPro && carpetas[index].links.length >= LIMIT_LINKS) {
+        return Swal.fire({ title: "Límite de Enlaces", text: "El plan FREE solo permite 2 enlaces por carpeta.", icon: "warning", ...swalConfig });
+      }
+      const { value: fv } = await Swal.fire({
+        title: "Añadir Enlace",
+        html: `<input id="swal-url" class="swal2-input" placeholder="https://..."><input id="swal-tag" class="swal2-input" placeholder="Nombre">`,
+        ...swalConfig,
+        showCancelButton: true,
+        preConfirm: () => ({ url: document.getElementById("swal-url").value, tag: document.getElementById("swal-tag").value })
+      });
+      if (fv?.url) {
+        carpetas[index].links.push(fv);
+        if (await actualizarDB(carpetas)) renderCarpetas();
+      }
+    }
+
+    if (action === "eliminar-carpeta") {
+      const res = await Swal.fire({ title: "¿Eliminar?", icon: "warning", showCancelButton: true, ...swalConfig });
+      if (res.isConfirmed) {
+        carpetas.splice(index, 1);
+        if (await actualizarDB(carpetas)) renderCarpetas();
+      }
+    }
+
+    if (action === "eliminar-link") {
+      const folderIdx = Number(btn.dataset.folder);
+      const linkIdx = Number(btn.dataset.link);
+      carpetas[folderIdx].links.splice(linkIdx, 1);
+      if (await actualizarDB(carpetas)) renderCarpetas();
+    }
+  });
+
+  cargarDatos();
 </script>
 
 <style>
@@ -555,38 +324,11 @@ if (!user) {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-
-  .folder-card {
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .folder-card:hover {
-    border-color: rgba(56, 189, 248, 0.4);
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px -20px rgba(56, 189, 248, 0.3);
-  }
-
+  .folder-card { transition: all 0.4s ease; }
+  .folder-card:hover { transform: translateY(-4px); }
   .share-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+    z-index: 100; display: none; align-items: center; justify-content: center;
   }
-
-  .share-overlay:not(.hidden) {
-    display: flex;
-  }
-
-  .share-box {
-    background: rgba(24, 24, 27, 0.95);
-    border: 1px solid #27272a;
-    padding: 2.5rem;
-    border-radius: 3rem;
-    width: 100%;
-    max-width: 480px;
-  }
+  .share-overlay:not(.hidden) { display: flex; }
 </style>

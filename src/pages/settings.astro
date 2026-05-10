@@ -1,0 +1,261 @@
+---
+import DashboardLayouts from "../layouts/dashboardLayouts.astro";
+import { createClient } from "@/lib/supabase";
+
+// 1. IMPORTACIÓN DEL LOGO
+import faviconImg from "../assets/favicon.png";
+
+const supabase = createClient({
+  request: Astro.request,
+  cookies: Astro.cookies,
+});
+
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+if (!user) {
+  return Astro.redirect("/login");
+}
+
+// Obtenemos los datos iniciales del perfil en el servidor
+const { data: profile } = await supabase
+  .from('profiles')
+  .select('avatar_url, nickname')
+  .eq('id', user?.id)
+  .single();
+
+// Obtenemos estadísticas para la previsualización
+const { data: folderData } = await supabase
+  .from('linkapp_folders')
+  .select('content')
+  .eq('user_id', user.id)
+  .single();
+
+const totalFolders = folderData?.content?.length || 0;
+const totalLinks = folderData?.content?.reduce((acc, f) => acc + (f.links?.length || 0), 0) || 0;
+
+const initialNickname = profile?.nickname || user.user_metadata?.nickname || user.email.split('@')[0];
+const initialAvatar = profile?.avatar_url || "";
+---
+
+<DashboardLayouts title="Ajustes de Perfil - LinkApp">
+  <div class="fixed inset-0 -z-10 bg-[#0a0a0a]">
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b0764_0%,transparent_50%)]"></div>
+  </div>
+
+  <div id="notification-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3"></div>
+
+  <header class="border-b border-white/5 sticky top-0 bg-[#0a0a0a]/80 backdrop-blur-xl z-50">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src={faviconImg.src} alt="Logo LinkApp" class="w-10 h-10 object-contain" />
+        <span class="font-bold text-xl tracking-tighter text-white">LinkApp</span>
+      </div>
+      <a href="/dashboard" class="px-5 py-2 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-surface transition-all text-white">
+        Volver al Panel
+      </a>
+    </div>
+  </header>
+
+  <main id="mainContent" class="max-w-4xl mx-auto px-6 py-12 w-full grid md:grid-cols-2 gap-12 items-start opacity-0 transition-opacity duration-500">
+    
+    <div class="settings-card p-8 rounded-[2.5rem] border border-white/10 shadow-2xl space-y-8">
+      <div>
+        <h1 class="text-3xl font-bold text-white tracking-tight uppercase">Editar <span class="text-blue transition-colors duration-300" id="accentText">Perfil</span></h1>
+        <p class="text-muted text-xs mt-2 uppercase tracking-widest font-bold">Configura tu presencia digital</p>
+      </div>
+
+      <form id="settingsForm" class="space-y-6">
+        <div class="flex items-center gap-6 p-4 bg-black/40 rounded-3xl border border-white/10 group">
+          <div class="relative w-20 h-20">
+            <img id="previewAvatar" src={initialAvatar} class={`w-full h-full object-cover rounded-full border border-white/10 ${!initialAvatar && 'hidden'}`}>
+            <div id="fallbackAvatar" class={`w-full h-full rounded-full bg-blue/10 flex items-center justify-center text-blue font-black ${initialAvatar && 'hidden'}`}>
+                {initialNickname[0].toUpperCase()}
+            </div>
+            <label for="uploadFile" class="absolute inset-0 flex items-center justify-center bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-[10px] font-black uppercase text-white">Subir</label>
+            <input type="file" id="uploadFile" accept="image/*" class="hidden">
+          </div>
+          <div>
+            <p class="text-[10px] font-black uppercase tracking-widest text-white">Imagen de Avatar</p>
+            <p class="text-[10px] text-muted mt-1">Click para subir nueva foto</p>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-[10px] text-muted uppercase font-black tracking-widest ml-2">Tu Nickname</label>
+          <input type="text" id="editNickname" class="w-full bg-[#18181b] border border-white/10 p-4 rounded-2xl outline-none focus:border-blue transition-all text-white font-bold" value={initialNickname} placeholder="Nuevo nickname">
+        </div>
+
+        <div class="space-y-3">
+          <label class="text-[10px] text-muted uppercase font-black tracking-widest ml-2">Color de Acento</label>
+          <div class="flex gap-4 p-2">
+            <div class="color-dot active bg-[#38BDF8]" data-color="#38BDF8"></div>
+            <div class="color-dot bg-[#A855F7]" data-color="#A855F7"></div>
+            <div class="color-dot bg-[#2DD4BF]" data-color="#2DD4BF"></div>
+            <div class="color-dot bg-[#F472B6]" data-color="#F472B6"></div>
+          </div>
+        </div>
+
+        <button type="submit" id="btnGuardar" class="w-full py-4 bg-blue text-black font-black rounded-2xl shadow-lg shadow-blue/20 hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest text-xs cursor-pointer">
+          Guardar Cambios
+        </button>
+      </form>
+    </div>
+
+    <div class="sticky top-32 space-y-6">
+      <p class="text-[10px] text-muted uppercase font-black tracking-widest text-center">Previsualización de Tarjeta</p>
+      <div class="settings-card p-8 rounded-[3rem] border border-white/10 text-center space-y-4 shadow-2xl">
+        <div id="cardAvatarContainer" class="w-24 h-24 mx-auto rounded-full border-4 border-blue p-1 transition-colors duration-300">
+          <img id="cardAvatar" src={initialAvatar} class={`w-full h-full object-cover rounded-full bg-[#18181b] ${!initialAvatar && 'hidden'}`}>
+          <div id="cardFallback" class={`w-full h-full rounded-full bg-[#18181b] flex items-center justify-center text-2xl font-bold text-white ${initialAvatar && 'hidden'}`}>
+            {initialNickname[0].toUpperCase()}
+          </div>
+        </div>
+        <div>
+          <h3 id="cardName" class="text-2xl font-bold text-white tracking-tight">@{initialNickname}</h3>
+        </div>
+        <div class="pt-4 border-t border-white/5 flex justify-center gap-4 opacity-50 text-[10px] font-bold text-white uppercase tracking-widest">
+          <span>📁 {totalFolders}</span> <span>🔗 {totalLinks}</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</DashboardLayouts>
+
+<script>
+  // @ts-nocheck
+  import { supabaseBrowser } from "../lib/supabase";
+
+  const nicknameInput = document.getElementById('editNickname');
+  const uploadFile = document.getElementById('uploadFile');
+  const cardName = document.getElementById('cardName');
+  const colorDots = document.querySelectorAll('.color-dot');
+  const btnGuardar = document.getElementById('btnGuardar');
+  const mainContent = document.getElementById('mainContent');
+  
+  let base64Avatar = document.getElementById('previewAvatar').src.startsWith('data') ? document.getElementById('previewAvatar').src : "";
+
+  // Mostrar contenido suavemente
+  setTimeout(() => mainContent.classList.remove('opacity-0'), 100);
+
+  function mostrarAlerta(mensaje, tipo = 'error') {
+    const container = document.getElementById('notification-container');
+    const notification = document.createElement('div');
+    const bgColor = tipo === 'success' ? 'bg-teal/90' : 'bg-red-500/90';
+    const icon = tipo === 'success' ? '✨' : '⚠️';
+
+    notification.className = `${bgColor} backdrop-blur-md text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 min-w-[300px] notification-enter border border-white/10`;
+    notification.innerHTML = `
+      <span class="text-xl">${icon}</span>
+      <div class="flex flex-col text-left">
+        <span class="text-[10px] font-bold uppercase tracking-widest opacity-70">${tipo === 'success' ? 'Sistema' : 'Atención'}</span>
+        <span class="text-sm font-medium">${mensaje}</span>
+      </div>
+    `;
+
+    container.appendChild(notification);
+    setTimeout(() => notification.classList.add('notification-active'), 10);
+    setTimeout(() => {
+      notification.classList.remove('notification-active');
+      setTimeout(() => notification.remove(), 400);
+    }, 3500);
+  }
+
+  nicknameInput.addEventListener('input', (e) => {
+    const val = e.target.value || 'Usuario';
+    cardName.textContent = '@' + val;
+    if (document.getElementById('previewAvatar').classList.contains('hidden')) {
+        document.getElementById('fallbackAvatar').textContent = val[0].toUpperCase();
+        document.getElementById('cardFallback').textContent = val[0].toUpperCase();
+    }
+  });
+
+  uploadFile.addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+      if (file.size > 1024 * 1024 * 2) {
+        mostrarAlerta("Imagen demasiado pesada (Máx 2MB)", "error");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        base64Avatar = e.target.result;
+        updateAvatarsVisuals(base64Avatar);
+        mostrarAlerta("Imagen lista para guardar", "success");
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  function updateAvatarsVisuals(src) {
+    ['previewAvatar', 'cardAvatar'].forEach(id => {
+      const img = document.getElementById(id);
+      img.src = src;
+      img.classList.remove('hidden');
+    });
+    ['fallbackAvatar', 'cardFallback'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  }
+
+  colorDots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      colorDots.forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+      const color = dot.dataset.color;
+      document.getElementById('accentText').style.color = color;
+      document.getElementById('cardAvatarContainer').style.borderColor = color;
+      btnGuardar.style.backgroundColor = color;
+    });
+  });
+
+  document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    btnGuardar.innerText = "SINCRONIZANDO...";
+    btnGuardar.disabled = true;
+
+    try {
+      const { data: { session } } = await supabaseBrowser.auth.getSession();
+      if (!session) throw new Error("Sesión expirada");
+
+      const nuevoNick = nicknameInput.value;
+
+      const { error } = await supabaseBrowser
+        .from('profiles')
+        .upsert({
+          id: session.user.id,
+          nickname: nuevoNick,
+          avatar_url: base64Avatar || document.getElementById('previewAvatar').src,
+          updated_at: new Date()
+        });
+
+      if (error) throw error;
+
+      mostrarAlerta('¡Perfil actualizado!', 'success');
+      setTimeout(() => window.location.href = '/dashboard', 1000);
+
+    } catch (err) {
+      mostrarAlerta(err.message, "error");
+      btnGuardar.innerText = "Guardar Cambios";
+      btnGuardar.disabled = false;
+    }
+  });
+</script>
+
+<style>
+  .settings-card {
+    background: #18181b;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .color-dot {
+    width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+    transition: all 0.3s; border: 2px solid transparent;
+  }
+  .color-dot:hover { transform: scale(1.2); }
+  .color-dot.active { border-color: white; transform: scale(1.1); }
+
+  .notification-enter { transform: translateX(100%); opacity: 0; }
+  .notification-active { transform: translateX(0); opacity: 1; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+</style>

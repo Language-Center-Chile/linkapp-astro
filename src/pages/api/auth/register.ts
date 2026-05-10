@@ -19,6 +19,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       password,
       options: {
         emailRedirectTo: `${new URL(request.url).origin}/login`,
+        // AQUÍ PASAMOS EL NOMBRE PARA QUE EL TRIGGER LO VEA:
+        data: {
+          nickname: username 
+        },
       },
     });
 

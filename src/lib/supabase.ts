@@ -1,9 +1,10 @@
-import { createServerClient, parseCookieHeader } from "@supabase/ssr";
+import { createServerClient, parseCookieHeader, createBrowserClient } from "@supabase/ssr";
 import type { AstroCookies } from "astro";
 
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
-const supabasePublishableKey = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY; // Verifica que este nombre coincida con tu .env
 
+// Cliente para el SERVIDOR (Astro)
 export function createClient({
   request,
   cookies,
@@ -13,7 +14,7 @@ export function createClient({
 }) {
   return createServerClient(
     supabaseUrl,
-    supabasePublishableKey,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
@@ -21,7 +22,7 @@ export function createClient({
             ({ name, value }) => ({ name, value: value ?? "" })
           );
         },
-        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
+        setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) =>
             cookies.set(name, value, options)
           );
@@ -31,9 +32,9 @@ export function createClient({
   );
 }
 
-import { createClient as createBrowserClient } from "@supabase/supabase-js";
-
+// Cliente para el NAVEGADOR (Scripts)
+// Al usar createBrowserClient de @supabase/ssr, detectará automáticamente las cookies
 export const supabaseBrowser = createBrowserClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY
+  supabaseUrl,
+  supabaseAnonKey
 );
