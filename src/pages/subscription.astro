@@ -1,47 +1,129 @@
 ---
-import MainLayout from '../layouts/mainLayouts.astro';
-import Carta from '../components/ui/cards/carta.astro';
+import MainLayout from "../layouts/mainLayouts.astro";
 ---
 
 <MainLayout
-  title='Suscripción | LinkApps'
-  description='¡Gracias por tu interés en suscribirte a LinkApps! Con una suscripción, podrás disfrutar de características exclusivas y apoyar el desarrollo continuo de nuestra plataforma.'
+  title="Suscripción | LinkApp"
+  description="¡Gracias por tu interés en suscribirte a LinkApp! Con una suscripción, podrás disfrutar de características exclusivas."
 >
-<div class="cards-container">
-  <Carta 
-    title='Comunidad LinkApps'
-    description='Perfil básico personal con acceso a funciones limitadas.'
-    price='FREE'
-    pricedescriptor={null}
-    texto='Empieza Ahora'
-    features={['✓ Perfil básico personal', '✓ Hasta 3 carpetas con 2 enlaces activos']}
-  />
-  <Carta 
-    title='Plus Para Creadores'
-    description='Incluye todas las características del plan básico más extras.'
-    price='$5.99'
-    pricedescriptor='/Mensual'
-    texto='Elige Plus'
-    features={['✓ Links ilimitados en las carpetas', '✓ Código QR premium para compartir enlaces', '✓ Carpetas ilimitadas con links activos']}
-  />
-  <Carta 
-    title='Business Para Empresas'
-    description='Incluye todas las características del plan pro más soporte prioritario.'
-    price='$9.99'
-    pricedescriptor='/Mensual'
-    texto='Elige Business'
-    features={['✓ Todo lo del plan Plus', '✓ Dominio personalizado', '✓ Analíticas avanzadas', '✓ Eliminación de marca']}
-  />
-</div>
+  <section class="relative min-h-screen flex flex-col items-center justify-center px-6 py-24 overflow-hidden">
+    
+    <div class="relative z-10 max-w-6xl w-full">
+      <header class="text-center mb-16">
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter uppercase text-white mb-6">
+          Planes y <span class="gradient-text">Precios</span>
+        </h1>
+        <p class="text-zinc-200 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-medium custom-shadow text-center">
+          Escala tu organización digital con funciones diseñadas para la eficiencia y el minimalismo.
+        </p>
+      </header>
+
+      <div class="grid md:grid-cols-3 gap-8 items-stretch">
+        <!-- Plan Comunidad -->
+        <div class="group p-10 bg-[#18181b] border border-white/10 rounded-[2.5rem] hover:border-blue/50 transition-all duration-500 flex flex-col shadow-2xl">
+          <div class="mb-8">
+            <h3 class="text-xs font-black uppercase tracking-[0.3em] text-blue mb-2">Comunidad</h3>
+            <div class="flex items-baseline gap-1 text-white">
+              <span class="text-4xl font-black">FREE</span>
+            </div>
+            <p class="text-zinc-400 text-sm mt-4">Perfil básico personal con acceso a funciones limitadas.</p>
+          </div>
+          
+          <ul class="space-y-4 mb-10 flex-grow">
+            <li class="text-zinc-300 text-sm flex items-center gap-3">
+              <span class="text-blue">✓</span> Perfil básico personal
+            </li>
+            <li class="text-zinc-300 text-sm flex items-center gap-3">
+              <span class="text-blue">✓</span> Hasta 3 carpetas activas
+            </li>
+          </ul>
+
+          <button class="w-full py-4 bg-white/5 border border-white/10 text-white font-black rounded-2xl hover:bg-white hover:text-black transition-all uppercase tracking-widest text-[10px]">
+            Empieza Ahora
+          </button>
+        </div>
+
+        <!-- Plan Plus (Destacado) -->
+        <div class="group p-10 bg-[#1c1c21] border-2 border-blue rounded-[2.5rem] transition-all duration-500 flex flex-col shadow-[0_0_40px_rgba(59,130,246,0.15)] relative scale-105 z-20">
+          <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+            Recomendado
+          </div>
+          <div class="mb-8">
+            <h3 class="text-xs font-black uppercase tracking-[0.3em] text-blue mb-2">Plus</h3>
+            <div class="flex items-baseline gap-1 text-white">
+              <span class="text-4xl font-black">$5.99</span>
+              <span class="text-zinc-500 text-sm">/mes</span>
+            </div>
+            <p class="text-zinc-400 text-sm mt-4">Incluye todas las características básicas más extras profesionales.</p>
+          </div>
+          
+          <ul class="space-y-4 mb-10 flex-grow">
+            <li class="text-zinc-100 text-sm flex items-center gap-3 font-medium">
+              <span class="text-blue">✓</span> Links ilimitados
+            </li>
+            <li class="text-zinc-100 text-sm flex items-center gap-3 font-medium">
+              <span class="text-blue">✓</span> Código QR premium
+            </li>
+            <li class="text-zinc-100 text-sm flex items-center gap-3 font-medium">
+              <span class="text-blue">✓</span> Carpetas ilimitadas
+            </li>
+          </ul>
+
+          <button class="w-full py-4 bg-blue text-white font-black rounded-2xl hover:bg-blue/80 transition-all uppercase tracking-widest text-[10px] shadow-lg shadow-blue/20">
+            Elige Plus
+          </button>
+        </div>
+
+        <!-- Plan Business -->
+        <div class="group p-10 bg-[#18181b] border border-white/10 rounded-[2.5rem] hover:border-blue/50 transition-all duration-500 flex flex-col shadow-2xl">
+          <div class="mb-8">
+            <h3 class="text-xs font-black uppercase tracking-[0.3em] text-green-400 mb-2">Business</h3>
+            <div class="flex items-baseline gap-1 text-white">
+              <span class="text-4xl font-black">$9.99</span>
+              <span class="text-zinc-500 text-sm">/mes</span>
+            </div>
+            <p class="text-zinc-400 text-sm mt-4">Soporte prioritario y herramientas de marca avanzada.</p>
+          </div>
+          
+          <ul class="space-y-4 mb-10 flex-grow">
+            <li class="text-zinc-300 text-sm flex items-center gap-3">
+              <span class="text-green-400">✓</span> Todo lo del plan Plus
+            </li>
+            <li class="text-zinc-300 text-sm flex items-center gap-3">
+              <span class="text-green-400">✓</span> Dominio personalizado
+            </li>
+            <li class="text-zinc-300 text-sm flex items-center gap-3">
+              <span class="text-green-400">✓</span> Analíticas avanzadas
+            </li>
+          </ul>
+
+          <button class="w-full py-4 bg-white/5 border border-white/10 text-white font-black rounded-2xl hover:bg-white hover:text-black transition-all uppercase tracking-widest text-[10px]">
+            Elige Business
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</MainLayout>
 
 <style>
-  .cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: stretch;
-    gap: 2rem;
-    padding: 2rem;
+  .gradient-text {
+    background: linear-gradient(135deg, #00f2ff 0%, #4ade80 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .custom-shadow {
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8));
+  }
+
+  .text-blue {
+    color: #00f2ff;
+  }
+
+  @media (max-width: 768px) {
+    .scale-105 {
+      transform: scale(1);
+    }
   }
 </style>
-</MainLayout>

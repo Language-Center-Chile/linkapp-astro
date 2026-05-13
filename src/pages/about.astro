@@ -3,8 +3,59 @@ import MainLayout from '../layouts/mainLayouts.astro';
 ---
 
 <MainLayout
-  title="Acerca de | LinkApps"
-  description="Descubre más sobre LinkApps, tu plataforma de gestión de enlaces personalizada. Aprende sobre nuestra misión, visión y el equipo detrás de la aplicación."
+  title="Acerca de | LinkApp"
+  description="Descubre más sobre LinkApp, tu plataforma de gestión de enlaces personalizada. Aprende sobre nuestra misión, visión y el equipo detrás de la aplicación."
 >
+  <section class="relative min-h-screen flex flex-col items-center justify-center px-6 py-24 overflow-hidden">
+    
+    <!-- Contenedor de Texto Principal -->
+    <div class="relative z-10 max-w-4xl w-full">
+      <header class="text-center mb-20">
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter uppercase text-white mb-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
+          Nuestra <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00f2ff] to-[#4ade80]">Visión</span>
+        </h1>
+        <p class="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+          LinkApp nace de la necesidad de centralizar tu presencia digital en un solo lugar, combinando diseño minimalista con una automatización potente.
+        </p>
+      </header>
 
-</MainLayout>
+      <!-- Tarjetas de Información -->
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-[#18181b] border border-white/5 p-10 rounded-[2.5rem] shadow-2xl transition-transform hover:scale-[1.02] duration-300">
+          <div class="w-12 h-12 bg-blue/10 rounded-2xl flex items-center justify-center mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="text-[#00f2ff]" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-4 uppercase tracking-tight">Misión</h2>
+          <p class="text-zinc-500 leading-relaxed">
+            Simplificar la forma en que los creadores y profesionales comparten su contenido, eliminando la fricción y ofreciendo una interfaz limpia y altamente personalizable.
+          </p>
+        </div>
+
+        <div class="bg-[#18181b] border border-white/5 p-10 rounded-[2.5rem] shadow-2xl transition-transform hover:scale-[1.02] duration-300">
+          <div class="w-12 h-12 bg-green-400/10 rounded-2xl flex items-center justify-center mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="text-[#4ade80]" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h2 class="text-2xl font-bold text-white mb-4 uppercase tracking-tight">El Equipo</h2>
+          <p class="text-zinc-500 leading-relaxed">
+            LinkApp es un proyecto impulsado por la pasión por el desarrollo web moderno y la automatización, diseñado para escalar junto con tus necesidades digitales.
+          </p>
+        </div>
+      </div>
+
+      <!-- Sección de Tecnología (Opcional/Extra) -->
+      <div class="mt-20 pt-10 border-t border-white/5 flex flex-wrap justify-center gap-8 opacity-30 grayscale">
+        <span class="text-xs font-black uppercase tracking-[0.3em] text-white">Astro</span>
+        <span class="text-xs font-black uppercase tracking-[0.3em] text-white">Tailwind</span>
+        <span class="text-xs font-black uppercase tracking-[0.3em] text-white">Supabase</span>
+        <span class="text-xs font-black uppercase tracking-[0.3em] text-white">n8n</span>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* Aseguramos que el fondo sea coherente con el sistema visual */
+  :global(body) {
+    background-color: #0a0a0a;
+  }
+</style>

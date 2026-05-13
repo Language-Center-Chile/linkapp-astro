@@ -4,57 +4,73 @@ import faviconImg from "../assets/favicon.png";
 ---
 
 <MainLayout
-  title="Inicio | LinkApps"
-  description="Bienvenido a LinkApps, tu plataforma de gestión de enlaces personalizada. Organiza, comparte y accede a tus enlaces favoritos de manera fácil y rápida. ¡Empieza a crear tu colección de enlaces hoy mismo!"
+  title="Inicio | LinkApp"
+  description="Bienvenido a LinkApp, tu plataforma de gestión de enlaces personalizada."
 >
-  <section class="text-center pt-20 pb-16 px-6 flex flex-col items-center">
-    <h1
-      class="text-5xl md:text-7xl font-black mb-6 leading-[1.1] tracking-tight text-white"
-    >
-      Organiza tu mundo digital<br />
-      <span class="gradient-text">con estilo</span>
-    </h1>
+  <section class="relative text-center pt-24 pb-20 px-6 flex flex-col items-center overflow-hidden">
+    
+    <div class="relative z-10 w-full flex flex-col items-center">
+      <h1 class="text-5xl md:text-8xl font-black mb-8 leading-[1] tracking-tighter text-white">
+        Organiza tu mundo digital<br />
+        <span class="gradient-text">con estilo</span>
+      </h1>
 
-    <p class="text-lg text-muted max-w-2xl mb-10 leading-relaxed">
-      LinkApp centraliza tus recursos más importantes en un entorno oscuro
-      elegante. Diseñado para la eficiencia, la privacidad y el minimalismo.
-    </p>
+      <!-- Texto centrado con drop-shadow aplicado -->
+      <p class="text-zinc-100 text-lg md:text-xl max-w-2xl mb-12 leading-relaxed font-medium text-center custom-shadow">
+        Centraliza tus recursos en un entorno oscuro diseñado para la <span class="text-white">eficiencia</span> y el <span class="text-white">minimalismo</span>.
+      </p>
+    </div>
   </section>
 
-  <section class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8 mb-24">
-    <div
-      class="group p-8 bg-surface border border-border rounded-3xl hover:border-blue/50 transition-all duration-300 hover:-translate-y-2"
-    >
-      <div class="text-blue text-3xl mb-4">📂</div>
-      <h3 class="text-xl font-bold mb-3 text-white">
-        Organización Inteligente
-      </h3>
-      <p class="text-muted text-sm leading-relaxed">
-        Estructura tus enlaces mediante carpetas personalizadas accesibles en un
-        clic.
+  <section class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8 mb-24 relative z-10">
+    <div class="card-glass group p-8 bg-[#18181b] border border-white/10 rounded-[2.5rem] hover:border-blue/50 transition-all duration-500">
+      <div class="text-3xl mb-4 bg-blue/10 w-fit p-3 rounded-2xl">📂</div>
+      <h3 class="text-xl font-bold mb-3 text-white tracking-tight">Organización Inteligente</h3>
+      <p class="text-zinc-400 text-sm leading-relaxed">
+        Estructura tus enlaces mediante carpetas personalizadas accesibles en un clic.
       </p>
     </div>
 
-    <div
-      class="group p-8 bg-surface border border-border rounded-3xl hover:border-blue/50 transition-all duration-300 hover:-translate-y-2"
-    >
-      <div class="text-blue text-3xl mb-4">🌍</div>
-      <h3 class="text-xl font-bold mb-3 text-white">Acceso Universal</h3>
-      <p class="text-muted text-sm leading-relaxed">
-        Sincroniza tus colecciones y comparte tus gustos musicales o películas
-        con tus amigos de forma rápida.
+    <div class="card-glass group p-8 bg-[#18181b] border border-white/10 rounded-[2.5rem] hover:border-blue/50 transition-all duration-500">
+      <div class="text-3xl mb-4 bg-blue/10 w-fit p-3 rounded-2xl">🌍</div>
+      <h3 class="text-xl font-bold mb-3 text-white tracking-tight">Acceso Universal</h3>
+      <p class="text-zinc-400 text-sm leading-relaxed">
+        Sincroniza tus colecciones y comparte tus gustos con tus amigos de forma rápida.
       </p>
     </div>
 
-    <div
-      class="group p-8 bg-surface border border-border rounded-3xl hover:border-blue/50 transition-all duration-300 hover:-translate-y-2"
-    >
-      <div class="text-blue text-3xl mb-4">🔒</div>
-      <h3 class="text-xl font-bold mb-3 text-white">Privacidad Primero</h3>
-      <p class="text-muted text-sm leading-relaxed">
-        Sin rastreadores. Tus datos te pertenecen. Un espacio seguro para tu
-        tranquilidad digital.
+    <div class="card-glass group p-8 bg-[#18181b] border border-white/10 rounded-[2.5rem] hover:border-blue/50 transition-all duration-500">
+      <div class="text-3xl mb-4 bg-blue/10 w-fit p-3 rounded-2xl">🔒</div>
+      <h3 class="text-xl font-bold mb-3 text-white tracking-tight">Privacidad Primero</h3>
+      <p class="text-zinc-400 text-sm leading-relaxed">
+        Sin rastreadores. Tus datos te pertenecen. Un espacio seguro para ti.
       </p>
     </div>
   </section>
 </MainLayout>
+
+<style>
+  .gradient-text {
+    background: linear-gradient(135deg, #00f2ff 0%, #4ade80 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Drop shadow suave para el párrafo para mejorar legibilidad sobre el fondo animado */
+  .custom-shadow {
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8));
+  }
+
+  h1 {
+    text-shadow: none;
+  }
+
+  .card-glass {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+  .card-glass:hover {
+    transform: translateY(-10px);
+    background: #1c1c21;
+  }
+</style>

@@ -1,5 +1,14 @@
 ---
 const { user } = Astro.props;
+
+// Detectamos la ruta actual
+const pathname = new URL(Astro.request.url).pathname;
+
+// Función auxiliar para aplicar clases según la ruta
+const getActiveClass = (path: string) => {
+  const isActive = pathname === path || (path !== '/' && pathname.startsWith(path));
+  return isActive ? "text-white" : "text-muted hover:text-blue";
+};
 ---
 
 <header class="border-b border-border sticky top-0 bg-black/80 backdrop-blur-md z-50">
@@ -14,10 +23,10 @@ const { user } = Astro.props;
     <!-- Navegacion Desktop -->
     <nav class="hidden md:flex items-center gap-8 text-sm">
       <div class="flex gap-6 border-r border-border pr-6 font-medium">
-        <a href="/" class="text-white hover:text-blue transition-colors">Inicio</a>
-        <a href="/about" class="text-muted hover:text-blue transition-colors">Nosotros</a>
-        <a href="/contact" class="text-muted hover:text-blue transition-colors">Contacto</a>
-        <a href="/subscription" class="text-muted hover:text-blue transition-colors">Suscripcion</a>
+        <a href="/" class={`${getActiveClass('/')} transition-colors`}>Inicio</a>
+        <a href="/about" class={`${getActiveClass('/about')} transition-colors`}>Nosotros</a>
+        <a href="/contact" class={`${getActiveClass('/contact')} transition-colors`}>Contacto</a>
+        <a href="/subscription" class={`${getActiveClass('/subscription')} transition-colors`}>Suscripcion</a>
       </div>
 
       <!-- Zona de Autenticacion Dinamica -->
@@ -53,10 +62,10 @@ const { user } = Astro.props;
   <!-- Menu Movil Dinamico -->
   <div id="mobile-menu" class="hidden absolute top-20 left-0 w-full bg-black/95 backdrop-blur-xl border-b border-border p-8 flex flex-col items-center text-center gap-6 md:hidden z-40 shadow-2xl">
     <div class="flex flex-col gap-5 w-full">
-      <a href="/" class="text-white text-lg font-bold uppercase tracking-widest">Inicio</a>
-      <a href="/about" class="text-muted hover:text-blue text-lg font-bold uppercase tracking-widest">Nosotros</a>
-      <a href="/contact" class="text-muted hover:text-blue text-lg font-bold uppercase tracking-widest">Contacto</a>
-      <a href="/subscription" class="text-muted hover:text-blue text-lg font-bold uppercase tracking-widest">Suscripcion</a>
+      <a href="/" class={`${getActiveClass('/')} text-lg font-bold uppercase tracking-widest`}>Inicio</a>
+      <a href="/about" class={`${getActiveClass('/about')} text-lg font-bold uppercase tracking-widest`}>Nosotros</a>
+      <a href="/contact" class={`${getActiveClass('/contact')} text-lg font-bold uppercase tracking-widest`}>Contacto</a>
+      <a href="/subscription" class={`${getActiveClass('/subscription')} text-lg font-bold uppercase tracking-widest`}>Suscripcion</a>
     </div>
 
     <div class="h-px bg-border w-1/2 my-2"></div>
@@ -115,7 +124,7 @@ const { user } = Astro.props;
   menuBtn?.addEventListener('click', () => {
     mobileMenu?.classList.toggle('hidden');
     if (menuIcon) {
-      menuIcon.textContent = mobileMenu?.classList.contains('hidden') ? '&#9776;' : 'x';
+      menuIcon.innerHTML = mobileMenu?.classList.contains('hidden') ? '&#9776;' : '✕';
     }
   });
 </script>
