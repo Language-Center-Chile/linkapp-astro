@@ -1,6 +1,7 @@
 ---
 import DashboardLayouts from "../layouts/dashboardLayouts.astro";
 import { createClient } from "@/lib/supabase";
+import FloatingLines from "@/components/shared/FloatingLines";
 
 // 1. IMPORTACIÓN DEL LOGO
 import faviconImg from "../assets/favicon.png";
@@ -40,9 +41,23 @@ const initialAvatar = profile?.avatar_url || "";
 ---
 
 <DashboardLayouts title="Ajustes de Perfil - LinkApp">
-  <div class="fixed inset-0 -z-10 bg-[#0a0a0a]">
-    <div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,#3b0764_0%,transparent_50%)]"></div>
+  <!-- FONTO ANIMADO LINKAPP -->
+  <div class="site-bg">
+    <div class="floating-lines-wrap">
+      <FloatingLines
+        client:load
+        linesGradient={["#00f2ff", "#4ade80", "#27272a"]}
+        animationSpeed={5}
+        interactive={true}
+        bendRadius={1}
+        bendStrength={0}
+        mouseDamping={0.01}
+        parallax={true}
+        parallaxStrength={1}
+        topWavePosition={{ x: 10.0, y: 0.5, rotate: -0.4 }}
+        middleWavePosition={{ x: 5.0, y: 0.0, rotate: 0.2 }}
+      />
+    </div>
   </div>
 
   <div id="notification-container" class="fixed top-6 right-6 z-[100] flex flex-col gap-3"></div>
@@ -59,7 +74,7 @@ const initialAvatar = profile?.avatar_url || "";
     </div>
   </header>
 
-  <main id="mainContent" class="max-w-4xl mx-auto px-6 py-12 w-full grid md:grid-cols-2 gap-12 items-start opacity-0 transition-opacity duration-500">
+  <main id="mainContent" class="max-w-4xl mx-auto px-6 py-12 w-full grid md:grid-cols-2 gap-12 items-start opacity-0 transition-opacity duration-500 relative z-10">
     
     <div class="settings-card p-8 rounded-[2.5rem] border border-white/10 shadow-2xl space-y-8">
       <div>
@@ -88,17 +103,7 @@ const initialAvatar = profile?.avatar_url || "";
           <input type="text" id="editNickname" class="w-full bg-[#18181b] border border-white/10 p-4 rounded-2xl outline-none focus:border-blue transition-all text-white font-bold" value={initialNickname} placeholder="Nuevo nickname">
         </div>
 
-        <div class="space-y-3">
-          <label class="text-[10px] text-muted uppercase font-black tracking-widest ml-2">Color de Acento</label>
-          <div class="flex gap-4 p-2">
-            <div class="color-dot active bg-[#38BDF8]" data-color="#38BDF8"></div>
-            <div class="color-dot bg-[#A855F7]" data-color="#A855F7"></div>
-            <div class="color-dot bg-[#2DD4BF]" data-color="#2DD4BF"></div>
-            <div class="color-dot bg-[#F472B6]" data-color="#F472B6"></div>
-          </div>
-        </div>
-
-        <button type="submit" id="btnGuardar" class="w-full py-4 bg-blue text-black font-black rounded-2xl shadow-lg shadow-blue/20 hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest text-xs cursor-pointer">
+        <button type="submit" id="btnGuardar" class="mesh-gradient-btn w-full py-4 text-black font-black rounded-2xl shadow-lg shadow-blue/20 hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest text-xs cursor-pointer">
           Guardar Cambios
         </button>
       </form>
@@ -132,7 +137,6 @@ const initialAvatar = profile?.avatar_url || "";
   const nicknameInput = document.getElementById('editNickname');
   const uploadFile = document.getElementById('uploadFile');
   const cardName = document.getElementById('cardName');
-  const colorDots = document.querySelectorAll('.color-dot');
   const btnGuardar = document.getElementById('btnGuardar');
   const mainContent = document.getElementById('mainContent');
   
@@ -199,17 +203,6 @@ const initialAvatar = profile?.avatar_url || "";
     ['fallbackAvatar', 'cardFallback'].forEach(id => document.getElementById(id).classList.add('hidden'));
   }
 
-  colorDots.forEach(dot => {
-    dot.addEventListener('click', () => {
-      colorDots.forEach(d => d.classList.remove('active'));
-      dot.classList.add('active');
-      const color = dot.dataset.color;
-      document.getElementById('accentText').style.color = color;
-      document.getElementById('cardAvatarContainer').style.borderColor = color;
-      btnGuardar.style.backgroundColor = color;
-    });
-  });
-
   document.getElementById('settingsForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     btnGuardar.innerText = "SINCRONIZANDO...";
@@ -244,17 +237,48 @@ const initialAvatar = profile?.avatar_url || "";
 </script>
 
 <style>
+  .site-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-color: #0a0a0a;
+  }
+
+  .floating-lines-wrap {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .floating-lines-wrap > div,
+  .floating-lines-wrap canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    pointer-events: all;
+  }
+
   .settings-card {
-    background: #18181b;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
+  background: #18181b; /* Color sólido original */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
   
-  .color-dot {
-    width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
-    transition: all 0.3s; border: 2px solid transparent;
+  .mesh-gradient-btn {
+    background-color: #00f2ff;
+    background-image: 
+      radial-gradient(at 0% 0%, #00f2ff 0, transparent 50%), 
+      radial-gradient(at 100% 0%, #4ade80 0, transparent 50%), 
+      radial-gradient(at 100% 100%, #00f2ff 0, transparent 50%), 
+      radial-gradient(at 0% 100%, #4ade80 0, transparent 50%);
+    background-size: 150% 150%;
+    animation: mesh-move 4s ease-in-out infinite alternate;
   }
-  .color-dot:hover { transform: scale(1.2); }
-  .color-dot.active { border-color: white; transform: scale(1.1); }
+
+  @keyframes mesh-move {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+  }
 
   .notification-enter { transform: translateX(100%); opacity: 0; }
   .notification-active { transform: translateX(0); opacity: 1; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
