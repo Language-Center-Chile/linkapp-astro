@@ -1,0 +1,147 @@
+---
+import Layout from "../layouts/mainLayouts.astro";
+import { createClient } from "@/lib/supabase";
+
+const supabase = createClient({
+  request: Astro.request,
+  cookies: Astro.cookies,
+});
+
+const { searchParams } = Astro.url;
+const sharedId = searchParams.get("id"); // Ahora buscamos por ID
+
+let folderData = null;
+let avatarUrl = null;
+let ownerName = "Usuario";
+let error = false;
+
+if (sharedId) {
+  try {
+    // 1. Buscamos la colección compartida en la nueva tabla
+    const { data: sharedEntry, error: sharedError } = await supabase
+      .from('shared_collections')
+      .select('*')
+      .eq('id', sharedId)
+      .single();
+
+    if (sharedError || !sharedEntry) {
+      error = true;
+    } else {
+      // Mapeamos los datos recuperados
+      folderData = sharedEntry.content; // Contiene { n: "nombre", l: [links] }
+      ownerName = sharedEntry.owner_nickname || "Usuario";
+
+      // 2. Buscamos el avatar del dueño usando su owner_id
+      if (sharedEntry.owner_id) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('avatar_url')
+          .eq('id', sharedEntry.owner_id)
+          .single();
+        avatarUrl = profile?.avatar_url;
+      }
+    }
+  } catch (e) {
+    console.error("Error recuperando datos:", e);
+    error = true;
+  }
+} else {
+  error = true;
+}
+
+const folderName = folderData?.n || "Colección Privada";
+const links = folderData?.l || [];
+const userInitials = ownerName[0].toUpperCase();
+---
+
+<Layout title={`${folderName} - LinkApp`} description={`Mira la colección de enlaces de ${ownerName}`}>
+  <main class="min-h-screen bg-[#0a0a0a] text-white flex flex-col items-center px-6 py-20 relative overflow-hidden">
+    
+    <!-- Elementos visuales de fondo -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none">
+        <div class="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue/5 rounded-full blur-[120px]"></div>
+    </div>
+
+    <div class="relative z-10 w-full max-w-xl flex flex-col items-center">
+      
+      <!-- FOTO DE PERFIL -->
+      <div class="mb-8 animate-in fade-in zoom-in duration-700">
+        <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white/5 p-1 bg-[#18181b] shadow-2xl shadow-blue/10 overflow-hidden">
+          {avatarUrl ? (
+            <img src={avatarUrl} alt={ownerName} class="w-full h-full object-cover rounded-full" />
+          ) : (
+            <div class="w-full h-full bg-gradient-to-br from-blue/20 to-teal/20 flex items-center justify-center text-blue text-4xl font-black">
+              {userInitials}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <!-- INFORMACIÓN DEL USUARIO Y CARPETA -->
+      <div class="text-center mb-16 animate-in fade-in slide-in-from-top-4 duration-700 delay-100">
+        <p class="text-blue text-xs font-black uppercase tracking-[0.3em] mb-3">Compartido por @{ownerName}</p>
+        <h1 class="text-4xl md:text-5xl font-black tracking-tighter text-white">
+            {error ? "Enlace no válido" : folderName}
+        </h1>
+      </div>
+
+      <!-- LISTADO DE LINKS -->
+      <section class="w-full space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300">
+        {error ? (
+          <div class="text-center py-10 border border-white/5 bg-[#18181b] rounded-[2.5rem]">
+            <p class="text-muted text-sm mb-4">Parece que este enlace ha expirado o es incorrecto.</p>
+            <a href="/" class="text-blue font-black uppercase text-xs tracking-widest hover:underline">Volver a Inicio</a>
+          </div>
+        ) : (
+          links.length > 0 ? (
+            links.map((link) => (
+              <a 
+                href={link.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="group flex items-center justify-between p-5 bg-[#18181b] border border-white/5 rounded-[2rem] hover:border-blue/40 hover:bg-white/[0.03] transition-all duration-300 shadow-xl"
+              >
+                <div class="flex flex-col gap-1 pl-2">
+                  <span class="text-lg font-bold text-white group-hover:text-blue transition-colors">
+                    {link.tag || "Enlace"}
+                  </span>
+                  <span class="text-[10px] text-zinc-500 truncate max-w-[200px] md:max-w-sm">
+                    {link.url.replace(/^https?:\/\//, '')}
+                  </span>
+                </div>
+                <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-blue group-hover:text-black transition-all">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                </div>
+              </a>
+            ))
+          ) : (
+            <div class="text-center py-20 opacity-30 italic font-medium">
+               Esta colección aún no tiene enlaces.
+            </div>
+          )
+        )}
+      </section>
+
+      <!-- FOOTER BRANDING -->
+      <footer class="mt-24 opacity-40 hover:opacity-100 transition-opacity duration-500">
+        <a href="/" class="flex items-center gap-3 bg-white/5 px-6 py-3 rounded-full border border-white/5">
+           <span class="text-[10px] font-black uppercase tracking-widest text-zinc-400">Hecho en</span>
+           <span class="font-bold tracking-tighter text-white">LinkApp</span>
+        </a>
+      </footer>
+
+    </div>
+  </main>
+</Layout>
+
+<style>
+  body {
+    background-color: #0a0a0a;
+  }
+  .text-muted {
+    color: #71717a;
+  }
+</style>

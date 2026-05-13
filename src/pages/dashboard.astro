@@ -31,7 +31,7 @@ const userInitials = nickname[0].toUpperCase();
   title="Dashboard - LinkApp"
   description="Gestiona tus colecciones de enlaces con estilo."
 >
-  <main id="dashboardMain" data-plan={plan} data-is-pro={isPro.toString()}>
+  <main id="dashboardMain" data-plan={plan} data-is-pro={isPro.toString()} data-nickname={nickname}>
     <header class="w-full border-b border-white/5 bg-[#0a0a0a] sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -108,7 +108,7 @@ const userInitials = nickname[0].toUpperCase();
 
         <div class="relative mb-12 max-w-2xl mx-auto">
           <div class="absolute left-6 top-1/2 -translate-y-1/2 text-blue">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" x2="16.65"></line></svg>
           </div>
           <input type="text" id="globalSearch" placeholder="Que link estas buscando hoy?" class="w-full bg-[#18181b] border-2 border-white/5 text-white p-6 pl-16 rounded-[2.5rem] focus:border-blue outline-none transition-all shadow-2xl" />
         </div>
@@ -116,18 +116,35 @@ const userInitials = nickname[0].toUpperCase();
         <div id="folderGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
       </div>
 
+      <!-- OVERLAY DE COMPARTIR ACTUALIZADO -->
       <div id="shareOverlay" class="share-overlay hidden">
-        <div class="share-box relative animate-in fade-in zoom-in duration-200">
-          <button id="closeShare" class="absolute top-6 right-8 text-muted hover:text-white transition-colors text-2xl font-black">✕</button>
+        <div class="share-box relative animate-in fade-in zoom-in duration-200 bg-[#18181b] p-10 rounded-[3rem] border border-white/10 max-w-sm w-full mx-4 overflow-y-auto max-h-[90vh]">
+          <button id="closeShare" class="absolute top-6 right-8 text-muted hover:text-white transition-colors text-2xl font-black cursor-pointer">✕</button>
+          
           <h3 class="text-2xl font-black text-white uppercase tracking-tighter mb-8 text-center">Compartir Colección</h3>
+          
           <div id="qrContainer" class="bg-white p-4 rounded-[2.5rem] w-48 h-48 mx-auto flex items-center justify-center shadow-2xl shadow-blue/20 mb-8">
-            <div id="qrCode"></div>
+            <canvas id="qrCanvas" class="w-full h-full"></canvas>
           </div>
+
+          <!-- BOTONES DE REDES SOCIALES -->
+          <div class="flex justify-center gap-4 mb-8">
+            <a id="shareWA" target="_blank" class="w-10 h-10 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center hover:bg-green-500 hover:text-white transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </a>
+            <a id="shareX" target="_blank" class="w-10 h-10 bg-white/5 text-white rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+            </a>
+            <a id="shareFB" target="_blank" class="w-10 h-10 bg-blue-600/10 text-blue-600 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            </a>
+          </div>
+
           <div class="space-y-3 mb-8">
-            <p class="text-[10px] font-black uppercase tracking-widest text-muted">Enlace de acceso</p>
+            <p class="text-[10px] font-black uppercase tracking-widest text-muted text-center">Enlace de acceso</p>
             <div class="flex gap-2">
               <input type="text" id="shareUrl" readonly class="w-full bg-black/40 border border-white/10 text-white p-4 rounded-xl text-xs outline-none focus:border-blue/50" />
-              <button id="copyUrl" class="bg-blue text-white px-6 rounded-xl font-black text-[10px] uppercase hover:bg-blue/80 transition-all">Copiar</button>
+              <button id="copyUrl" class="bg-blue text-white px-6 rounded-xl font-black text-[10px] uppercase hover:bg-blue/80 transition-all cursor-pointer">Copiar</button>
             </div>
           </div>
         </div>
@@ -139,10 +156,12 @@ const userInitials = nickname[0].toUpperCase();
 <script>
   // @ts-nocheck
   import Swal from "sweetalert2";
+  import QRCode from "qrcode";
   import { supabaseBrowser } from "../lib/supabase"; 
 
   const main = document.getElementById('dashboardMain');
   const isPro = main?.dataset.isPro === 'true';
+  const nicknameGlobal = main?.dataset.nickname || "Usuario";
   const LIMIT_FOLDERS = isPro ? 1000 : 2;
   const LIMIT_LINKS = isPro ? 10000 : 2;
 
@@ -156,7 +175,6 @@ const userInitials = nickname[0].toUpperCase();
     color: "#fff",
   };
 
-  // Header logic
   const profileBtn = document.getElementById('profileBtn');
   const profileMenu = document.getElementById('profileMenu');
   
@@ -172,6 +190,24 @@ const userInitials = nickname[0].toUpperCase();
   document.getElementById('logoutBtn')?.addEventListener('click', async () => {
     await supabaseBrowser.auth.signOut();
     window.location.href = "/login";
+  });
+
+  const shareOverlay = document.getElementById('shareOverlay');
+  const closeShare = document.getElementById('closeShare');
+  const copyUrlBtn = document.getElementById('copyUrl');
+  const shareUrlInput = document.getElementById('shareUrl');
+  const qrCanvas = document.getElementById('qrCanvas');
+
+  const shareWA = document.getElementById('shareWA');
+  const shareX = document.getElementById('shareX');
+  const shareFB = document.getElementById('shareFB');
+
+  closeShare?.addEventListener('click', () => shareOverlay?.classList.add('hidden'));
+  
+  copyUrlBtn?.addEventListener('click', () => {
+    shareUrlInput.select();
+    document.execCommand('copy');
+    Swal.fire({ title: "Copiado", text: "Enlace copiado al portapapeles", icon: "success", timer: 1500, showConfirmButton: false, ...swalConfig });
   });
 
   function escapeHtml(str) {
@@ -282,6 +318,50 @@ const userInitials = nickname[0].toUpperCase();
     const action = btn.dataset.action;
     const index = Number(btn.dataset.index);
 
+    if (action === "compartir-carpeta") {
+      const folder = carpetas[index];
+
+      // NUEVA LÓGICA CON SUPABASE TABLE
+      const { data: sharedData, error: sharedError } = await supabaseBrowser
+        .from('shared_collections')
+        .insert({
+          owner_id: userId,
+          owner_nickname: nicknameGlobal,
+          content: {
+            n: folder.nombre,
+            l: folder.links
+          }
+        })
+        .select('id')
+        .single();
+
+      if (sharedError) {
+        return Swal.fire({ title: "Error", text: "No se pudo generar el link seguro.", icon: "error", ...swalConfig });
+      }
+
+      const shareUrl = `${window.location.origin}/view?id=${sharedData.id}`;
+      
+      if (shareUrlInput) shareUrlInput.value = shareUrl;
+
+      if (qrCanvas) {
+        QRCode.toCanvas(qrCanvas, shareUrl, {
+          width: 180,
+          margin: 0,
+          color: { dark: '#000000', light: '#ffffff' }
+        }, (err) => {
+          if (err) console.error(err);
+        });
+      }
+
+      const text = `¡Mira mi colección "${folder.nombre}" en LinkApp!`;
+      shareWA.href = `https://wa.me/?text=${encodeURIComponent(text + " " + shareUrl)}`;
+      shareX.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
+      shareFB.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+
+      shareOverlay?.classList.remove('hidden');
+      return;
+    }
+
     if (action === "agregar-link") {
       if (!isPro && carpetas[index].links.length >= LIMIT_LINKS) {
         return Swal.fire({ title: "Límite de Enlaces", text: "El plan FREE solo permite 2 enlaces por carpeta.", icon: "warning", ...swalConfig });
@@ -327,8 +407,13 @@ const userInitials = nickname[0].toUpperCase();
   .folder-card { transition: all 0.4s ease; }
   .folder-card:hover { transform: translateY(-4px); }
   .share-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
     z-index: 100; display: none; align-items: center; justify-content: center;
   }
   .share-overlay:not(.hidden) { display: flex; }
+  #qrCanvas {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 1.5rem;
+  }
 </style>
