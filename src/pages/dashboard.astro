@@ -97,8 +97,8 @@ const userInitials = nickname[0].toUpperCase();
             </p>
 
             <div class="flex justify-center md:justify-start gap-4 mt-6">
-              <button id="btnBackup" type="button" class="text-[10px] font-black uppercase tracking-widest text-muted hover:text-blue transition-colors flex items-center gap-2">Backup</button>
-              <button id="btnRestore" type="button" class="text-[10px] font-black uppercase tracking-widest text-muted hover:text-teal transition-colors flex items-center gap-2">Restaurar</button>
+              <button id="btnBackup" type="button" class="text-[10px] font-black uppercase tracking-widest text-muted hover:text-blue transition-colors flex items-center gap-2 cursor-pointer">📥Backup</button>
+              <button id="btnRestore" type="button" class="text-[10px] font-black uppercase tracking-widest text-muted hover:text-teal transition-colors flex items-center gap-2 cursor-pointer">📥Restaurar</button>
               <input type="file" id="importInput" class="hidden" accept=".json" />
             </div>
           </div>
@@ -116,7 +116,6 @@ const userInitials = nickname[0].toUpperCase();
         <div id="folderGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
       </div>
 
-      <!-- OVERLAY DE COMPARTIR ACTUALIZADO -->
       <div id="shareOverlay" class="share-overlay hidden">
         <div class="share-box relative animate-in fade-in zoom-in duration-200 bg-[#18181b] p-10 rounded-[3rem] border border-white/10 max-w-sm w-full mx-4 overflow-y-auto max-h-[90vh]">
           <button id="closeShare" class="absolute top-6 right-8 text-muted hover:text-white transition-colors text-2xl font-black cursor-pointer">✕</button>
@@ -127,15 +126,14 @@ const userInitials = nickname[0].toUpperCase();
             <canvas id="qrCanvas" class="w-full h-full"></canvas>
           </div>
 
-          <!-- BOTONES DE REDES SOCIALES -->
           <div class="flex justify-center gap-4 mb-8">
-            <a id="shareWA" target="_blank" class="w-10 h-10 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center hover:bg-green-500 hover:text-white transition-all">
+            <a id="shareWA" target="_blank" class="w-10 h-10 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center hover:bg-green-500 hover:text-white transition-all cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
             </a>
-            <a id="shareX" target="_blank" class="w-10 h-10 bg-white/5 text-white rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
+            <a id="shareX" target="_blank" class="w-10 h-10 bg-white/5 text-white rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
             </a>
-            <a id="shareFB" target="_blank" class="w-10 h-10 bg-blue-600/10 text-blue-600 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all">
+            <a id="shareFB" target="_blank" class="w-10 h-10 bg-blue-600/10 text-blue-600 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
             </a>
           </div>
@@ -247,23 +245,59 @@ const userInitials = nickname[0].toUpperCase();
       Swal.fire({ ...swalConfig, title: "Error", text: error.message, icon: "error" });
       return false;
     }
+      
     carpetas = nuevasCarpetas;
     return true;
   }
+
+  // EVENTO DEL BUSCADOR GLOBAL
+  document.getElementById("globalSearch")?.addEventListener("input", () => {
+    renderCarpetas();
+  });
 
   function renderCarpetas(lista = carpetas) {
     const grid = document.getElementById("folderGrid");
     if (!grid) return;
     grid.innerHTML = "";
 
-    if (!lista || lista.length === 0) {
-      grid.innerHTML = `<div class="col-span-full text-center py-20 opacity-50 text-white font-black uppercase text-xs tracking-widest">No hay colecciones creadas</div>`;
+    const searchInput = document.getElementById("globalSearch");
+    const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
+
+    // Filtramos las carpetas y los enlaces asignando los índices originales
+    const itemsToRender = lista.map((folder, folderIndex) => {
+      const isBlocked = !isPro && folderIndex >= LIMIT_FOLDERS;
+      const allLinks = Array.isArray(folder.links) ? folder.links : [];
+      
+      let processedLinks = allLinks.map((link, linkIndex) => ({ ...link, originalLinkIndex: linkIndex }));
+      let folderMatches = false;
+
+      if (searchTerm) {
+        folderMatches = folder.nombre.toLowerCase().includes(searchTerm);
+        if (!folderMatches) {
+          processedLinks = processedLinks.filter(l => 
+            l.url.toLowerCase().includes(searchTerm) || (l.tag && l.tag.toLowerCase().includes(searchTerm))
+          );
+        }
+      }
+
+      return {
+        ...folder,
+        originalIndex: folderIndex,
+        isBlocked,
+        displayedLinks: processedLinks,
+        shouldShow: !searchTerm || folderMatches || processedLinks.length > 0
+      };
+    }).filter(folder => folder.shouldShow);
+
+    if (itemsToRender.length === 0) {
+      grid.innerHTML = `<div class="col-span-full text-center py-20 opacity-50 text-white font-black uppercase text-xs tracking-widest">${searchTerm ? 'No se encontraron resultados' : 'No hay colecciones creadas'}</div>`;
       return;
     }
 
-    grid.innerHTML = lista.map((folder, index) => {
-      const isBlocked = !isPro && index >= LIMIT_FOLDERS;
-      const links = Array.isArray(folder.links) ? folder.links : [];
+    grid.innerHTML = itemsToRender.map((folder) => {
+      const index = folder.originalIndex;
+      const isBlocked = folder.isBlocked;
+      const links = folder.displayedLinks;
       
       return `
         <div class="folder-card border border-white/5 rounded-[2.5rem] p-8 flex flex-col h-full bg-[#18181b] animate-fade-in shadow-xl relative overflow-hidden">
@@ -287,10 +321,10 @@ const userInitials = nickname[0].toUpperCase();
           <div class="space-y-2 mb-6 flex-1">
             ${links.length === 0 
               ? '<p class="text-[10px] text-muted uppercase tracking-widest text-center py-4">Sin links aún</p>'
-              : links.map((link, li) => `
+              : links.map((link) => `
                 <div class="flex items-center justify-between bg-white/[0.03] p-3 rounded-xl border border-transparent hover:border-blue/20 transition-all group gap-2">
                   <a href="${link.url}" target="_blank" class="text-xs font-bold text-white hover:text-blue truncate flex-1">${escapeHtml(link.tag || link.url)}</a>
-                  <button data-action="eliminar-link" data-folder="${index}" data-link="${li}" class="text-muted hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity text-xs px-2 cursor-pointer">✕</button>
+                  <button data-action="eliminar-link" data-folder="${index}" data-link="${link.originalLinkIndex}" class="text-muted hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity text-xs px-2 cursor-pointer">✕</button>
                 </div>
               `).join('')
             }
@@ -300,6 +334,89 @@ const userInitials = nickname[0].toUpperCase();
       `;
     }).join('');
   }
+
+  // --- LÓGICA DE BACKUP ---
+  document.getElementById("btnBackup")?.addEventListener("click", () => {
+    if (!carpetas || carpetas.length === 0) {
+      return Swal.fire({ title: "Sin datos", text: "No tienes colecciones para hacer un backup.", icon: "info", ...swalConfig });
+    }
+    
+    const backupData = JSON.stringify(carpetas, null, 2);
+    const blob = new Blob([backupData], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `linkapp_backup_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  // --- LÓGICA DE RESTAURAR ---
+  const importInput = document.getElementById("importInput");
+  
+  document.getElementById("btnRestore")?.addEventListener("click", () => {
+    importInput?.click();
+  });
+
+  importInput?.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const jsonData = JSON.parse(event.target.result);
+        
+        if (!Array.isArray(jsonData)) {
+          throw new Error("El archivo no tiene el formato correcto.");
+        }
+
+        const confirmacion = await Swal.fire({
+          title: "Restaurar Backup",
+          text: "Al restaurar, tus colecciones actuales serán reemplazadas por las del archivo. ¿Deseas continuar?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sí, restaurar",
+          cancelButtonText: "Cancelar",
+          ...swalConfig
+        });
+
+        if (confirmacion.isConfirmed) {
+          const carpetasARestaurar = isPro ? jsonData : jsonData.slice(0, LIMIT_FOLDERS);
+          
+          if (!isPro && jsonData.length > LIMIT_FOLDERS) {
+            await Swal.fire({ 
+              title: "Aviso de Plan Free", 
+              text: `Tu plan Free solo permite ${LIMIT_FOLDERS} carpetas. Solo se han restaurado las primeras.`, 
+              icon: "info", 
+              ...swalConfig 
+            });
+          }
+
+          if (await actualizarDB(carpetasARestaurar)) {
+            renderCarpetas();
+            Swal.fire({ 
+              title: "Restaurado", 
+              text: "Tus enlaces y carpetas han sido restaurados con éxito.", 
+              icon: "success", 
+              timer: 2000, 
+              showConfirmButton: false, 
+              ...swalConfig 
+            });
+          }
+        }
+      } catch (error) {
+        Swal.fire({ title: "Error", text: "El archivo seleccionado no es válido o está corrupto.", icon: "error", ...swalConfig });
+      }
+      
+      e.target.value = '';
+    };
+    
+    reader.readAsText(file);
+  });
 
   document.getElementById("btnNuevaCarpeta")?.addEventListener("click", async () => {
     if (carpetas.length >= LIMIT_FOLDERS) {
@@ -321,7 +438,6 @@ const userInitials = nickname[0].toUpperCase();
     if (action === "compartir-carpeta") {
       const folder = carpetas[index];
 
-      // NUEVA LÓGICA CON SUPABASE TABLE
       const { data: sharedData, error: sharedError } = await supabaseBrowser
         .from('shared_collections')
         .insert({
@@ -371,7 +487,20 @@ const userInitials = nickname[0].toUpperCase();
         html: `<input id="swal-url" class="swal2-input" placeholder="https://..."><input id="swal-tag" class="swal2-input" placeholder="Nombre">`,
         ...swalConfig,
         showCancelButton: true,
-        preConfirm: () => ({ url: document.getElementById("swal-url").value, tag: document.getElementById("swal-tag").value })
+        // VALIDACIÓN PARA OBLIGAR A PONER UN ENLACE CON FORMATO CORRECTO
+        preConfirm: () => {
+          const url = document.getElementById("swal-url").value.trim();
+          const tag = document.getElementById("swal-tag").value.trim();
+          if (!url) {
+            Swal.showValidationMessage("Es necesario agregar un enlace");
+            return false;
+          }
+          if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            Swal.showValidationMessage("Ingresa un enlace válido que comience con http:// o https://");
+            return false;
+          }
+          return { url, tag };
+        }
       });
       if (fv?.url) {
         carpetas[index].links.push(fv);
