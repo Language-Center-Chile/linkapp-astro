@@ -7,14 +7,56 @@ import Form from '../components/form/form.astro';
   title="Iniciar Sesion | LinkApps"
   description="Accede a tu cuenta en LinkApps y gestiona tus enlaces personalizados de manera eficiente."
 >
-  <Form
-    titulo="Iniciar Sesion"
-    input1="Email"
-    input2="Password"
-    textoBoton="Iniciar Sesion"
-    textoBoton2="Registrarse"
-    href2="/register"
-    textoBoton3="Olvide mi contrasena"
-    mode="login"
-  />
+  <div class="flex items-center justify-center min-h-[80vh] px-4">
+    <div class="w-full max-w-[350px]">
+      <Form
+        titulo="Iniciar Sesion"
+        input1="Email"
+        input2="Password"
+        textoBoton="Iniciar Sesion"
+        textoBoton2="Registrarse"
+        href2="/register"
+        mode="login"
+      />
+    </div>
+  </div>
 </MainLayout>
+
+<style>
+  :global(#auth-form) {
+    background-color: #171717;
+    padding: 2em;
+    border-radius: 25px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  :global(#heading) {
+    margin-top: 0 !important;
+    margin-bottom: 2em !important;
+    color: white;
+  }
+
+  /* FORZAR ESTILOS IDÉNTICOS PARA LOS BOTONES */
+  :global(.button1), :global(.button2) {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 0.8em !important;
+    border-radius: 5px !important;
+    border: none !important;
+    outline: none !important;
+    transition: 0.4s ease-in-out !important;
+    background-color: #252525 !important;
+    color: white !important;
+    text-decoration: none !important;
+    font-size: 1em !important;
+    margin-top: 10px !important;
+  }
+
+  :global(.button1:hover), :global(.button2:hover) {
+    background-color: black !important;
+    color: white !important;
+  }
+</style>

@@ -4,16 +4,42 @@ import Form from "../components/form/form.astro";
 ---
 
 <MainLayout
-  title="Registrarse | LinkApps"
-  description="Crea tu cuenta en LinkApps y empieza a gestionar tus enlaces personalizados."
+  title="Registrarse | LinkApp"
+  description="Crea tu cuenta en LinkApp y empieza a gestionar tus enlaces personalizados."
 >
-  <Form
-    titulo="Registrarse"
-    input1="Username"
-    input2="Password"
-    input3="E-mail"
-    input4="Confirm Password"
-    textoBoton="Registrarse"
-    mode="register"
-  />
+  <section class="relative min-h-screen flex flex-col items-center justify-center px-6 py-24 overflow-hidden">
+    
+    <div class="relative z-10 max-w-2xl w-full">
+      <header class="text-center mb-12">
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter uppercase text-white mb-6">
+          Únete a <span class="gradient-text">LinkApp</span>
+        </h1>
+        <p class="text-zinc-200 text-lg max-w-md mx-auto leading-relaxed font-medium custom-shadow text-center">
+          Crea tu cuenta y empieza a organizar tus recursos con un diseño minimalista y profesional.
+        </p>
+      </header>
+
+      <!-- Tarjeta de Registro con el estilo actual de LinkApp -->
+      <div class="bg-[#18181b] border border-white/10 p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative">
+        <div class="absolute -top-px left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-blue to-transparent"></div>
+        
+        <div class="form-container">
+          <Form
+            titulo="Crear Cuenta"
+            input1="Username"
+            input2="Password"
+            input3="E-mail"
+            input4="Confirm Password"
+            textoBoton="Registrarse"
+            mode="register"
+          />
+        </div>
+
+        <p class="text-center mt-8 text-zinc-500 text-xs tracking-widest uppercase font-black">
+          ¿Ya tienes cuenta? <a href="/login" class="text-blue hover:underline">Inicia Sesión</a>
+        </p>
+      </div>
+    </div>
+  </section>
 </MainLayout>
+

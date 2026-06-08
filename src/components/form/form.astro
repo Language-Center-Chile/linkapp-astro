@@ -1,7 +1,6 @@
 ---
 import Input from "./input.astro";
 import Button from "./button.astro";
-import "./styles.css";
 
 interface Props {
   titulo: string;
@@ -32,167 +31,124 @@ const {
 } = Astro.props;
 ---
 
-<form class="form" id="auth-form" data-mode={mode} method="POST">
-  <p id="heading">{titulo}</p>
+<form class="flex flex-col w-full max-w-md mx-auto" id="auth-form" data-mode={mode} method="POST">
+  <p id="heading" class="text-3xl font-black uppercase tracking-tight text-white mb-8 text-center drop-shadow-md">
+    {titulo}
+  </p>
 
-  <div class="field">
-    <svg
-      class="input-icon"
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      fill="currentColor"
-      viewBox="0 0 16 16"
-      aria-hidden="true"
-    >
-      <path d="M13.106 7.222c0-2.967-2.249-5.032-5.482-5.032-3.35 0-5.646 2.318-5.646 5.702 0 3.493 2.235 5.708 5.762 5.708.862 0 1.689-.123 2.304-.335v-.862c-.43.199-1.354.328-2.29.328-2.926 0-4.813-1.88-4.813-4.798 0-2.844 1.921-4.881 4.594-4.881 2.735 0 4.608 1.688 4.608 4.156 0 1.682-.554 2.769-1.416 2.769-.492 0-.772-.28-.772-.76V5.206H8.923v.834h-.11c-.266-.595-.881-.964-1.6-.964-1.4 0-2.378 1.162-2.378 2.823 0 1.737.957 2.906 2.379 2.906.8 0 1.415-.39 1.709-1.087h.11c.081.67.703 1.148 1.503 1.148 1.572 0 2.57-1.415 2.57-3.643zm-7.177.704c0-1.197.54-1.907 1.456-1.907.93 0 1.524.738 1.524 1.907S8.308 9.84 7.371 9.84c-.895 0-1.442-.725-1.442-1.914z"></path>
-    </svg>
-    <Input
-      name={mode === "login" ? "email" : "username"}
-      label={input1}
-      autocomplete={mode === "login" ? "email" : "username"}
-      type={mode === "login" ? "email" : "text"}
-    />
-  </div>
-
-  {input3 && (
-    <div class="field">
-      <svg
-        class="input-icon"
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        fill="currentColor"
-        viewBox="0 0 16 16"
-        aria-hidden="true"
-      >
-        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
-      </svg>
+  <div class="flex flex-col gap-5">
+    <div class="relative group flex flex-col">
       <Input
-        name="email"
-        label={input3}
-        autocomplete="email"
-        type="email"
+        name={mode === "login" ? "email" : "username"}
+        label={input1}
+        autocomplete={mode === "login" ? "email" : "username"}
+        type={mode === "login" ? "email" : "text"}
       />
     </div>
-  )}
 
-  <div class="field">
-    <svg
-      class="input-icon"
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      fill="currentColor"
-      viewBox="0 0 16 16"
-      aria-hidden="true"
-    >
-      <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"></path>
-    </svg>
-    <Input
-      name="password"
-      label={input2}
-      autocomplete="new-password"
-      type="password"
-    />
-  </div>
+    {input3 && (
+      <div class="relative group flex flex-col">
+        <Input
+          name="email"
+          label={input3}
+          autocomplete="email"
+          type="email"
+        />
+      </div>
+    )}
 
-  {input4 && (
-    <div class="field">
-      <svg
-        class="input-icon"
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        fill="currentColor"
-        viewBox="0 0 16 16"
-        aria-hidden="true"
-      >
-        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
-      </svg>
+    <div class="relative group flex flex-col">
       <Input
-        name="confirmPassword"
-        label={input4}
+        name="password"
+        label={input2}
         autocomplete="new-password"
         type="password"
       />
     </div>
-  )}
 
-  <div class="btn">
-    <Button textoBoton={textoBoton} type="submit" />
-    {textoBoton2 && <Button class="button2" textoBoton={textoBoton2} href={href2} type="button" />}
+    {input4 && (
+      <div class="relative group flex flex-col">
+        <Input
+          name="confirmPassword"
+          label={input4}
+          autocomplete="new-password"
+          type="password"
+        />
+      </div>
+    )}
   </div>
 
-  {textoBoton3 && <Button class="button3" textoBoton={textoBoton3} href={href3} type="button" />}
+  <div class="flex flex-col gap-3 mt-8">
+    <Button textoBoton={textoBoton} type="submit" />
+    {textoBoton2 && <Button class="button2" textoBoton={textoBoton2} href={href2} type="button" />}
+    {textoBoton3 && <Button class="button3" textoBoton={textoBoton3} href={href3} type="button" />}
+  </div>
 
-  <p id="form-message"></p>
+  <p id="form-message" class="text-center text-sm font-semibold text-[#00f2ff] mt-4 h-5"></p>
 </form>
 
-<!-- Modal confirmacion de email -->
 <div id="email-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
         <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
       </svg>
     </div>
-    <h2 id="modal-title">Revisa tu correo!</h2>
-    <p>Te enviamos un enlace de confirmacion a <strong id="modal-email"></strong>. Abrelo para activar tu cuenta.</p>
+    <h2 id="modal-title">¡Revisa tu correo!</h2>
+    <p>Te enviamos un enlace de confirmación a <strong id="modal-email"></strong>. Ábrelo para activar tu cuenta.</p>
     <button id="modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
 
-<!-- Modales de error -->
 <div id="password-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="password-modal-title">
-    <div class="modal-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+    <div class="modal-icon text-red-400">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
         <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
       </svg>
     </div>
-    <h2 id="password-modal-title">Error de contrasena!</h2>
-    <p>Las contrasenas que ingresaste no coinciden. Por favor, intentalo de nuevo.</p>
+    <h2 id="password-modal-title">¡Error de contraseña!</h2>
+    <p>Las contraseñas que ingresaste no coinciden. Por favor, inténtalo de nuevo.</p>
     <button id="password-modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
 
 <div id="incorrect-password-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="incorrect-password-modal-title">
-    <div class="modal-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+    <div class="modal-icon text-red-400">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
         <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
       </svg>
     </div>
-    <h2 id="incorrect-password-modal-title">Credenciales incorrectas!</h2>
-    <p>El email o la contrasena que ingresaste no son correctos. Por favor, intentalo de nuevo.</p>
+    <h2 id="incorrect-password-modal-title">¡Credenciales incorrectas!</h2>
+    <p>El email o la contraseña que ingresaste no son correctos. Por favor, inténtalo de nuevo.</p>
     <button id="incorrect-password-modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
 
 <div id="short-password-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="short-password-modal-title">
-    <div class="modal-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+    <div class="modal-icon text-yellow-400">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
         <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
       </svg>
     </div>
-    <h2 id="short-password-modal-title">Contrasena demasiado corta!</h2>
-    <p>La contrasena debe tener al menos 6 caracteres. Por favor, elige una contrasena mas segura.</p>
+    <h2 id="short-password-modal-title">¡Contraseña muy corta!</h2>
+    <p>La contraseña debe tener al menos 6 caracteres. Por favor, elige una contraseña más segura.</p>
     <button id="short-password-modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
 
 <div id="rate-limit-modal" class="modal-overlay" aria-hidden="true">
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="rate-limit-modal-title">
-    <div class="modal-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+    <div class="modal-icon text-orange-400">
+      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
         <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
       </svg>
     </div>
-    <h2 id="rate-limit-modal-title">Demasiados intentos!</h2>
-    <p>Has superado el limite de envios de email. Espera unos minutos antes de intentarlo de nuevo.</p>
+    <h2 id="rate-limit-modal-title">¡Demasiados intentos!</h2>
+    <p>Has superado el límite de envíos. Espera unos minutos antes de intentarlo de nuevo.</p>
     <button id="rate-limit-modal-close" class="modal-btn">Entendido</button>
   </div>
 </div>
@@ -326,47 +282,145 @@ const {
 </script>
 
 <style>
+  /* === DISEÑO PULIDO Y PRECISO PARA COMPONENTES EXTERNOS === */
+
+  /* Reseteo y ajustes exactos para el campo input */
+  #auth-form :global(input) {
+    box-sizing: border-box;
+    width: 100%;
+    
+    /* COMENTADOS: Estos valores chocaban con .input-field y .field de tu styles.css */
+    /* background-color: rgba(255, 255, 255, 0.03); */
+    /* border: 1px solid rgba(255, 255, 255, 0.08); */
+    /* padding: 0.875rem 1rem; */
+    /* border-radius: 0.85rem; */
+    /* box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); */
+    
+    color: #ffffff;
+    font-size: 0.95rem; 
+    line-height: 1.5;
+    outline: none;
+    transition: all 0.25s ease;
+  }
+  
+  /* Estado focus tipo "Glow" */
+  #auth-form :global(input:focus) {
+    /* Comentado el borde para evitar desalineación, mantenemos solo el estilo necesario si aplica */
+    /* border-color: #00f2ff; */
+    /* background-color: rgba(0, 242, 255, 0.02); */
+    /* box-shadow: 0 0 0 1px #00f2ff, inset 0 2px 4px rgba(0,0,0,0.1); */
+  }
+
+  /* Etiquetas (Labels) proporcionadas y elegantes */
+  #auth-form :global(label) {
+    display: block;
+    font-size: 0.7rem; 
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #a1a1aa; 
+    margin-bottom: 0.4rem;
+    margin-left: 0.3rem;
+  }
+
+  /* Botones primarios (Blanco sobre negro, máximo contraste) */
+  #auth-form :global(button) {
+    width: 100%;
+    padding: 1rem;
+    background-color: #ffffff;
+    color: #000000;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 0.85rem;
+    font-size: 0.85rem;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  #auth-form :global(button:hover) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.15);
+  }
+
+  /* Botones secundarios (Transparencia) */
+  #auth-form :global(.button2), #auth-form :global(.button3) {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    box-shadow: none;
+  }
+
+  #auth-form :global(.button2:hover), #auth-form :global(.button3:hover) {
+    background-color: rgba(255, 255, 255, 0.05);
+    transform: none;
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* === MODALES ESTÉTICOS === */
   .modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px); 
     z-index: 1000;
     align-items: center;
     justify-content: center;
   }
-  .modal-overlay.modal-visible { display: flex; animation: fadeIn 0.25s ease; }
+  .modal-overlay.modal-visible { display: flex; animation: fadeIn 0.3s ease forwards; }
+  
   .modal-box {
-    background: #1e1e1e;
-    border: 1px solid #333;
-    border-radius: 20px;
-    padding: 2.5em 2em;
-    max-width: 360px;
+    background: #18181b; 
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.5rem; 
+    padding: 3em 2.5em;
+    max-width: 400px;
     width: 90%;
     text-align: center;
     color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1em;
-    animation: slideUp 0.3s ease;
+    gap: 1.2em;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
-  .modal-icon { color: #5264AE; }
-  .modal-box h2 { font-size: 1.3em; margin: 0; }
-  .modal-box p { color: #aaa; font-size: 0.95em; margin: 0; line-height: 1.5; }
-  .modal-box strong { color: white; }
+  
+  .modal-icon { color: #00f2ff; margin-bottom: 0.5rem; }
+  
+  .modal-box h2 { 
+    font-size: 1.35rem; 
+    margin: 0; 
+    font-weight: 800; 
+    letter-spacing: -0.02em; 
+  }
+  
+  .modal-box p { color: #a1a1aa; font-size: 0.9rem; margin: 0; line-height: 1.6; }
+  .modal-box strong { color: #ffffff; font-weight: 600; }
+  
   .modal-btn {
-    margin-top: 0.5em;
-    padding: 0.6em 2em;
-    border-radius: 8px;
+    margin-top: 1.5em;
+    padding: 0.85rem 2rem;
+    border-radius: 0.75rem;
     border: none;
-    background: #5264AE;
-    color: white;
-    font-size: 1em;
+    background: #ffffff;
+    color: #000000;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: all 0.2s ease;
+    width: 100%;
   }
-  .modal-btn:hover { background: #3a4a8a; }
+  .modal-btn:hover { 
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.15); 
+  }
+  
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes slideUp { from { transform: translateY(20px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
 </style>
