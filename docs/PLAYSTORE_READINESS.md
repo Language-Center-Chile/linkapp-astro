@@ -2,7 +2,7 @@
 
 ## Estado actual
 
-La aplicación es una app web Astro 6 con `output: "server"` y `@astrojs/node`. Usa endpoints SSR propios (`/api/auth/*`, `/api/folders`) y Supabase SSR. Por ello, el build actual NO es un sitio estático que pueda copiarse directamente a `webDir` de Capacitor sin una decisión de arquitectura.
+La aplicación es una app web Astro 7 con `output: "server"` y `@astrojs/node`. Usa endpoints SSR propios (`/api/auth/*`, `/api/folders`) y Supabase SSR. Por ello, el build actual NO es un sitio estático que pueda copiarse directamente a `webDir` de Capacitor sin una decisión de arquitectura.
 
 ## Objetivo Android
 
@@ -37,6 +37,7 @@ El `applicationId` debe tratarse como permanente una vez publicado.
 ## Checklist técnico
 
 - [x] Node >= 22.12 definido en `package.json`.
+- [x] Astro 7 y `@astrojs/node` 11 actualizados; build local reproducible y auditoría runtime con 0 vulnerabilidades.
 - [x] `.env` deja de versionarse en rama de preparación.
 - [x] `.env.example` sin credenciales reales.
 - [x] Keystores excluidos por `.gitignore`.
