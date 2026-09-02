@@ -1,0 +1,49 @@
+name: CI — Build and Security
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, review/playstore-readiness]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PUBLIC_SUPABASE_URL: https://example.supabase.co
+      PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-placeholder-publishable-key
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Reject tracked environment files
+        shell: bash
+        run: |
+          set -euo pipefail
+          tracked_env="$({ git ls-files | grep -E '(^|/)\.env($|\.)' | grep -vE '(^|/)\.env\.example$'; } || true)"
+          if [[ -n "$tracked_env" ]]; then
+            echo "Tracked environment files are not allowed:"
+            echo "$tracked_env"
+            exit 1
+          fi
+      - name: Reject tracked Android signing files
+        shell: bash
+        run: |
+          set -euo pipefail
+          tracked_android="$({ git ls-files | grep -E '(^|/)android/local\.properties$|\.(jks|keystore)$'; } || true)"
+          if [[ -n "$tracked_android" ]]; then
+            echo "Tracked Android signing or local configuration files are not allowed:"
+            echo "$tracked_android"
+            exit 1
+          fi
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Runtime dependency audit
+        run: npm audit --omit=dev --audit-level=high
