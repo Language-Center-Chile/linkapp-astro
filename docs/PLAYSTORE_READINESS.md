@@ -42,7 +42,7 @@ El `applicationId` debe tratarse como permanente una vez publicado.
 - [x] `.env.example` sin credenciales reales.
 - [x] Keystores excluidos por `.gitignore`.
 - [x] CI de build y auditoría de dependencias runtime agregado.
-- [x] CI completamente verde (run `CI — Build and Security` #11, 02-09-2026).
+- [x] CI completamente verde (verificado el 02-09-2026).
 - [ ] Revisar historial por secretos y rotar credenciales si corresponde.
 - [ ] Elegir arquitectura Android A o B.
 - [ ] Añadir Capacitor después de la decisión.
