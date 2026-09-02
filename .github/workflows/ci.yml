@@ -26,6 +26,16 @@ jobs:
             echo "$tracked_env"
             exit 1
           fi
+      - name: Reject tracked Android signing files
+        shell: bash
+        run: |
+          set -euo pipefail
+          tracked_android="$({ git ls-files | grep -E '(^|/)android/local\.properties$|\.(jks|keystore)$'; } || true)"
+          if [[ -n "$tracked_android" ]]; then
+            echo "Tracked Android signing or local configuration files are not allowed:"
+            echo "$tracked_android"
+            exit 1
+          fi
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
